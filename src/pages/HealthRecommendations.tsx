@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Brain, Heart, Utensils, Activity, Moon, AlertTriangle, Loader2 } from "lucide-react";
+import { Brain, Heart, Utensils, Activity, Moon, AlertTriangle, Loader2, Sparkles, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -24,19 +24,11 @@ const HealthRecommendations = () => {
   });
   const [recommendations, setRecommendations] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  const [apiKey, setApiKey] = useState("");
   const { toast } = useToast();
 
-  const generateRecommendations = async () => {
-    if (!apiKey) {
-      toast({
-        title: "API Key Required",
-        description: "Please enter your Gemini API key to generate recommendations.",
-        variant: "destructive",
-      });
-      return;
-    }
+  const API_KEY = "AIzaSyBkQd_1n4AxdCssdQkMAfpdY-7Ey0r5SB0";
 
+  const generateRecommendations = async () => {
     if (!formData.age || !formData.gender || !formData.healthGoals) {
       toast({
         title: "Missing Information",
@@ -104,7 +96,7 @@ Format your response as a structured JSON with the following format:
 Always include a disclaimer about consulting healthcare professionals.
       `;
 
-      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
       const payload = {
         contents: [
@@ -151,7 +143,7 @@ Always include a disclaimer about consulting healthcare professionals.
       console.error('Recommendation error:', error);
       toast({
         title: "Generation Failed",
-        description: "Failed to generate recommendations. Please check your API key and try again.",
+        description: "Failed to generate recommendations. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -165,15 +157,15 @@ Always include a disclaimer about consulting healthcare professionals.
     sleep: Moon,
     stress: Brain,
     lifestyle: Heart,
-    ayurveda: Activity
+    ayurveda: Sparkles
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
       {/* Navigation */}
-      <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <nav className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <Brain className="h-6 w-6 text-purple-600" />
             <span className="text-xl font-bold text-gray-800">AI Health Recommendations</span>
           </Link>
@@ -182,61 +174,52 @@ Always include a disclaimer about consulting healthcare professionals.
 
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4">
-              Personalized Health Recommendations
-            </h1>
-            <p className="text-lg text-gray-600">
-              Get AI-powered, personalized health and wellness recommendations based on your profile
+          {/* Header with animations */}
+          <div className="text-center mb-12 animate-fade-in">
+            <div className="relative">
+              <h1 className="text-5xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Personalized Health Recommendations
+              </h1>
+              <div className="absolute -top-4 -right-4">
+                <Sparkles className="h-8 w-8 text-purple-400 animate-pulse" />
+              </div>
+            </div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Get AI-powered, personalized health and wellness recommendations based on your unique profile
             </p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Input Form */}
             <div className="space-y-6">
-              {/* API Key */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <AlertTriangle className="mr-2 h-5 w-5 text-orange-500" />
-                    Gemini API Key
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Input
-                    type="password"
-                    placeholder="Enter your Gemini API key"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                  />
-                </CardContent>
-              </Card>
-
               {/* User Profile */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your Health Profile</CardTitle>
-                  <CardDescription>
+              <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
+                <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-t-lg">
+                  <CardTitle className="flex items-center">
+                    <Brain className="mr-2 h-5 w-5" />
+                    Your Health Profile
+                  </CardTitle>
+                  <CardDescription className="text-purple-100">
                     Fill in your details for personalized recommendations
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-6 p-6">
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="age">Age</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="age" className="text-sm font-medium">Age</Label>
                       <Input
                         id="age"
                         type="number"
                         placeholder="25"
                         value={formData.age}
                         onChange={(e) => setFormData({...formData, age: e.target.value})}
+                        className="border-2 focus:border-purple-400 transition-colors"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="gender">Gender</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="gender" className="text-sm font-medium">Gender</Label>
                       <Select onValueChange={(value) => setFormData({...formData, gender: value})}>
-                        <SelectTrigger>
+                        <SelectTrigger className="border-2 focus:border-purple-400">
                           <SelectValue placeholder="Select gender" />
                         </SelectTrigger>
                         <SelectContent>
@@ -249,32 +232,34 @@ Always include a disclaimer about consulting healthcare professionals.
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="height">Height (cm)</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="height" className="text-sm font-medium">Height (cm)</Label>
                       <Input
                         id="height"
                         type="number"
                         placeholder="170"
                         value={formData.height}
                         onChange={(e) => setFormData({...formData, height: e.target.value})}
+                        className="border-2 focus:border-purple-400 transition-colors"
                       />
                     </div>
-                    <div>
-                      <Label htmlFor="weight">Weight (kg)</Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="weight" className="text-sm font-medium">Weight (kg)</Label>
                       <Input
                         id="weight"
                         type="number"
                         placeholder="70"
                         value={formData.weight}
                         onChange={(e) => setFormData({...formData, weight: e.target.value})}
+                        className="border-2 focus:border-purple-400 transition-colors"
                       />
                     </div>
                   </div>
 
-                  <div>
-                    <Label>Activity Level</Label>
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Activity Level</Label>
                     <Select onValueChange={(value) => setFormData({...formData, activityLevel: value})}>
-                      <SelectTrigger>
+                      <SelectTrigger className="border-2 focus:border-purple-400">
                         <SelectValue placeholder="Select activity level" />
                       </SelectTrigger>
                       <SelectContent>
@@ -287,50 +272,53 @@ Always include a disclaimer about consulting healthcare professionals.
                     </Select>
                   </div>
 
-                  <div>
-                    <Label htmlFor="goals">Health Goals</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="goals" className="text-sm font-medium">Health Goals</Label>
                     <Textarea
                       id="goals"
                       placeholder="e.g., weight loss, muscle gain, stress reduction, better sleep..."
                       value={formData.healthGoals}
                       onChange={(e) => setFormData({...formData, healthGoals: e.target.value})}
+                      className="border-2 focus:border-purple-400 transition-colors min-h-[100px]"
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="conditions">Current Health Conditions (Optional)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="conditions" className="text-sm font-medium">Current Health Conditions (Optional)</Label>
                     <Textarea
                       id="conditions"
                       placeholder="e.g., diabetes, hypertension, arthritis..."
                       value={formData.currentConditions}
                       onChange={(e) => setFormData({...formData, currentConditions: e.target.value})}
+                      className="border-2 focus:border-purple-400 transition-colors"
                     />
                   </div>
 
-                  <div>
-                    <Label htmlFor="restrictions">Dietary Restrictions (Optional)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="restrictions" className="text-sm font-medium">Dietary Restrictions (Optional)</Label>
                     <Textarea
                       id="restrictions"
                       placeholder="e.g., vegetarian, vegan, allergies, gluten-free..."
                       value={formData.dietaryRestrictions}
                       onChange={(e) => setFormData({...formData, dietaryRestrictions: e.target.value})}
+                      className="border-2 focus:border-purple-400 transition-colors"
                     />
                   </div>
 
                   <Button 
                     onClick={generateRecommendations}
                     disabled={loading}
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                   >
                     {loading ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Generating Recommendations...
+                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                        Generating AI Recommendations...
                       </>
                     ) : (
                       <>
-                        <Brain className="mr-2 h-4 w-4" />
-                        Generate Recommendations
+                        <Brain className="mr-2 h-5 w-5" />
+                        Generate AI Recommendations
                       </>
                     )}
                   </Button>
@@ -342,13 +330,16 @@ Always include a disclaimer about consulting healthcare professionals.
             <div className="space-y-6">
               {recommendations ? (
                 recommendations.raw ? (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Your Personalized Recommendations</CardTitle>
+                  <Card className="border-0 shadow-lg animate-fade-in">
+                    <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-t-lg">
+                      <CardTitle className="flex items-center">
+                        <TrendingUp className="mr-2 h-5 w-5" />
+                        Your Personalized Recommendations
+                      </CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                       <div className="prose prose-sm max-w-none">
-                        <div className="whitespace-pre-wrap text-sm text-gray-700">
+                        <div className="whitespace-pre-wrap text-sm text-gray-700 bg-gray-50 p-4 rounded-lg">
                           {recommendations.raw}
                         </div>
                       </div>
@@ -356,24 +347,28 @@ Always include a disclaimer about consulting healthcare professionals.
                   </Card>
                 ) : (
                   <div className="space-y-6">
-                    {Object.entries(recommendations).map(([key, category]: [string, any]) => {
+                    {Object.entries(recommendations).map(([key, category]: [string, any], index) => {
                       const IconComponent = categoryIcons[key as keyof typeof categoryIcons] || Heart;
                       return (
-                        <Card key={key}>
-                          <CardHeader>
+                        <Card 
+                          key={key} 
+                          className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in"
+                          style={{ animationDelay: `${index * 0.1}s` }}
+                        >
+                          <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-t-lg">
                             <CardTitle className="flex items-center">
-                              <IconComponent className="mr-2 h-5 w-5 text-purple-600" />
+                              <IconComponent className="mr-2 h-5 w-5" />
                               {category.title}
                             </CardTitle>
                           </CardHeader>
-                          <CardContent className="space-y-4">
+                          <CardContent className="space-y-4 p-6">
                             {category.recommendations && (
                               <div>
-                                <h4 className="font-medium mb-2">Recommendations:</h4>
-                                <ul className="space-y-1 text-sm text-gray-700">
+                                <h4 className="font-semibold mb-3 text-gray-800">Recommendations:</h4>
+                                <ul className="space-y-2 text-sm text-gray-700">
                                   {category.recommendations.map((rec: string, idx: number) => (
-                                    <li key={idx} className="flex items-start">
-                                      <span className="mr-2">•</span>
+                                    <li key={idx} className="flex items-start p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                                      <span className="mr-3 text-blue-600 font-bold">•</span>
                                       <span>{rec}</span>
                                     </li>
                                   ))}
@@ -383,10 +378,14 @@ Always include a disclaimer about consulting healthcare professionals.
                             
                             {category.foods_to_include && (
                               <div>
-                                <h4 className="font-medium mb-2">Foods to Include:</h4>
-                                <div className="flex flex-wrap gap-1">
+                                <h4 className="font-semibold mb-3 text-gray-800">Foods to Include:</h4>
+                                <div className="flex flex-wrap gap-2">
                                   {category.foods_to_include.map((food: string, idx: number) => (
-                                    <Badge key={idx} variant="secondary" className="text-xs">
+                                    <Badge 
+                                      key={idx} 
+                                      variant="secondary" 
+                                      className="text-xs bg-green-100 text-green-800 hover:bg-green-200 transition-colors"
+                                    >
                                       {food}
                                     </Badge>
                                   ))}
@@ -396,10 +395,14 @@ Always include a disclaimer about consulting healthcare professionals.
 
                             {category.foods_to_avoid && (
                               <div>
-                                <h4 className="font-medium mb-2">Foods to Limit:</h4>
-                                <div className="flex flex-wrap gap-1">
+                                <h4 className="font-semibold mb-3 text-gray-800">Foods to Limit:</h4>
+                                <div className="flex flex-wrap gap-2">
                                   {category.foods_to_avoid.map((food: string, idx: number) => (
-                                    <Badge key={idx} variant="destructive" className="text-xs">
+                                    <Badge 
+                                      key={idx} 
+                                      variant="destructive" 
+                                      className="text-xs hover:opacity-80 transition-opacity"
+                                    >
                                       {food}
                                     </Badge>
                                   ))}
@@ -409,10 +412,14 @@ Always include a disclaimer about consulting healthcare professionals.
 
                             {category.suggested_activities && (
                               <div>
-                                <h4 className="font-medium mb-2">Suggested Activities:</h4>
-                                <div className="flex flex-wrap gap-1">
+                                <h4 className="font-semibold mb-3 text-gray-800">Suggested Activities:</h4>
+                                <div className="flex flex-wrap gap-2">
                                   {category.suggested_activities.map((activity: string, idx: number) => (
-                                    <Badge key={idx} variant="outline" className="text-xs">
+                                    <Badge 
+                                      key={idx} 
+                                      variant="outline" 
+                                      className="text-xs bg-blue-50 border-blue-200 hover:bg-blue-100 transition-colors"
+                                    >
                                       {activity}
                                     </Badge>
                                   ))}
@@ -422,10 +429,14 @@ Always include a disclaimer about consulting healthcare professionals.
 
                             {category.techniques && (
                               <div>
-                                <h4 className="font-medium mb-2">Techniques:</h4>
-                                <div className="flex flex-wrap gap-1">
+                                <h4 className="font-semibold mb-3 text-gray-800">Techniques:</h4>
+                                <div className="flex flex-wrap gap-2">
                                   {category.techniques.map((technique: string, idx: number) => (
-                                    <Badge key={idx} variant="outline" className="text-xs">
+                                    <Badge 
+                                      key={idx} 
+                                      variant="outline" 
+                                      className="text-xs bg-purple-50 border-purple-200 hover:bg-purple-100 transition-colors"
+                                    >
                                       {technique}
                                     </Badge>
                                   ))}
@@ -435,10 +446,14 @@ Always include a disclaimer about consulting healthcare professionals.
 
                             {category.herbs && (
                               <div>
-                                <h4 className="font-medium mb-2">Recommended Herbs:</h4>
-                                <div className="flex flex-wrap gap-1">
+                                <h4 className="font-semibold mb-3 text-gray-800">Recommended Herbs:</h4>
+                                <div className="flex flex-wrap gap-2">
                                   {category.herbs.map((herb: string, idx: number) => (
-                                    <Badge key={idx} variant="secondary" className="text-xs bg-green-100 text-green-800">
+                                    <Badge 
+                                      key={idx} 
+                                      variant="secondary" 
+                                      className="text-xs bg-green-100 text-green-800 hover:bg-green-200 transition-colors"
+                                    >
                                       {herb}
                                     </Badge>
                                   ))}
@@ -452,14 +467,16 @@ Always include a disclaimer about consulting healthcare professionals.
                   </div>
                 )
               ) : (
-                <Card>
-                  <CardContent className="text-center py-12">
-                    <Brain className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      No recommendations yet
+                <Card className="border-0 shadow-lg">
+                  <CardContent className="text-center py-16">
+                    <div className="animate-pulse">
+                      <Brain className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                      Ready to Generate Your Health Plan?
                     </h3>
-                    <p className="text-gray-500">
-                      Fill in your profile and click "Generate Recommendations" to get started
+                    <p className="text-gray-500 max-w-md mx-auto">
+                      Fill in your profile and click "Generate AI Recommendations" to get personalized health insights powered by advanced AI
                     </p>
                   </CardContent>
                 </Card>
