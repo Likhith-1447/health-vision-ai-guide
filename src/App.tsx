@@ -8,6 +8,9 @@ import Index from "./pages/Index";
 import MedicalAnalysis from "./pages/MedicalAnalysis";
 import AyurvedicProducts from "./pages/AyurvedicProducts";
 import HealthRecommendations from "./pages/HealthRecommendations";
+import SymptomChecker from "./pages/SymptomChecker";
+import NutritionAdvisor from "./pages/NutritionAdvisor";
+import FitnessPlanner from "./pages/FitnessPlanner";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +26,9 @@ const App = () => (
           <Route path="/analysis" element={<MedicalAnalysis />} />
           <Route path="/products" element={<AyurvedicProducts />} />
           <Route path="/recommendations" element={<HealthRecommendations />} />
+          <Route path="/symptom-checker" element={<SymptomChecker />} />
+          <Route path="/nutrition" element={<NutritionAdvisor />} />
+          <Route path="/fitness" element={<FitnessPlanner />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
