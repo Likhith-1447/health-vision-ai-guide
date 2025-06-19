@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +8,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Apple, CheckCircle, Sparkles, Zap, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import AIResponseDisplay from "@/components/AIResponseDisplay";
 
 const NutritionAdvisor = () => {
   const [age, setAge] = useState("");
@@ -37,9 +37,9 @@ const NutritionAdvisor = () => {
     setLoading(true);
     try {
       const prompt = `
-You are a certified nutritionist and dietitian. Create a comprehensive nutrition plan based on:
+You are a certified nutritionist and dietitian. Create a comprehensive nutrition plan with clear structure:
 
-Personal Details:
+**Personal Details:**
 - Age: ${age} years
 - Weight: ${weight} kg
 - Height: ${height} cm
@@ -48,21 +48,22 @@ Personal Details:
 - Dietary Preferences: ${dietary || 'None specified'}
 - Allergies/Restrictions: ${allergies || 'None'}
 
-Please provide:
-1. Daily caloric needs calculation
-2. Macronutrient breakdown (proteins, carbs, fats)
-3. Detailed meal plan for 7 days with Ayurvedic principles
-4. Specific food recommendations with portions
-5. Foods to avoid
-6. Hydration guidelines
-7. Supplement suggestions if needed
-8. Meal timing recommendations
-9. Healthy snack options
-10. Tips for meal preparation
+Please provide a structured response with the following sections:
 
-Include traditional Ayurvedic foods and principles where appropriate. Make it practical and easy to follow.
+1. **Health Assessment**: BMI calculation and health status overview
+2. **Daily Caloric Needs**: Detailed calorie requirements with breakdown
+3. **Macronutrient Distribution**: Proteins, carbohydrates, and fats with percentages
+4. **7-Day Meal Plan**: Daily meal suggestions with Ayurvedic principles
+5. **Food Recommendations**: Specific foods with portions and benefits
+6. **Foods to Avoid**: Items to limit or eliminate
+7. **Hydration Guidelines**: Water intake and timing recommendations
+8. **Supplement Suggestions**: If needed, with dosages
+9. **Meal Timing Strategy**: Optimal eating schedule
+10. **Preparation Tips**: Practical advice for meal prep
 
-Format the response in clear sections for easy reading.
+Include traditional Ayurvedic foods and principles where appropriate. Make recommendations practical and culturally relevant.
+
+Format your response with clear numbered sections and detailed explanations for easy implementation.
       `;
 
       const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
@@ -113,13 +114,13 @@ Format the response in clear sections for easy reading.
         <div className="container mx-auto px-4 py-4">
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <Apple className="h-6 w-6 text-orange-600" />
-            <span className="text-xl font-bold text-gray-800">AI Nutrition Advisor</span>
+            <span className="text-xl font-bold text-gray-800">AyurGen - Nutrition Advisor</span>
           </Link>
         </div>
       </nav>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 animate-fade-in">
             <div className="relative">
@@ -131,7 +132,7 @@ Format the response in clear sections for easy reading.
               </div>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Get personalized nutrition plans combining modern science with Ayurvedic wisdom
+              Get structured personalized nutrition plans combining modern science with Ayurvedic wisdom
             </p>
           </div>
 
@@ -249,40 +250,36 @@ Format the response in clear sections for easy reading.
             </Card>
 
             {/* Results Section */}
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="mr-2 h-5 w-5" />
-                  Your Nutrition Plan
-                </CardTitle>
-                <CardDescription className="text-green-100">
-                  Personalized nutrition recommendations
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6">
-                {recommendations ? (
-                  <div className="space-y-6 animate-fade-in">
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-sm text-gray-700 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-lg border-l-4 border-green-400 shadow-inner max-h-96 overflow-y-auto">
-                        {recommendations}
+            <div className="lg:col-span-1">
+              {recommendations ? (
+                <AIResponseDisplay response={recommendations} type="nutrition" />
+              ) : (
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
+                  <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center">
+                      <Target className="mr-2 h-5 w-5" />
+                      Your Nutrition Plan
+                    </CardTitle>
+                    <CardDescription className="text-green-100">
+                      Personalized nutrition recommendations
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="text-center py-16">
+                      <div className="animate-pulse mb-6">
+                        <Apple className="mx-auto h-16 w-16 text-gray-400" />
                       </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                        Ready for Your Nutrition Plan?
+                      </h3>
+                      <p className="text-gray-500 max-w-md mx-auto">
+                        Fill in your details to get a structured personalized nutrition plan with Ayurvedic principles
+                      </p>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <div className="animate-pulse mb-6">
-                      <Apple className="mx-auto h-16 w-16 text-gray-400" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                      Ready for Your Nutrition Plan?
-                    </h3>
-                    <p className="text-gray-500 max-w-md mx-auto">
-                      Fill in your details to get a personalized nutrition plan with Ayurvedic principles
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
 
           {/* Features */}

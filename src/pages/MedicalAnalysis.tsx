@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, Upload, Camera, AlertTriangle, CheckCircle, Sparkles, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import AIResponseDisplay from "@/components/AIResponseDisplay";
 
 const MedicalAnalysis = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -44,11 +44,20 @@ const MedicalAnalysis = () => {
 You are a medical practitioner and an expert in analyzing medical-related images working for a reputed hospital. 
 You will be provided with images and you need to identify the anomalies, any disease or health issues.
 
-Generate the result in a detailed manner. Write all the findings, next steps, recommendations, etc. 
+Please structure your response with clear sections:
+
+1. **Image Assessment**: Describe what you see in the image
+2. **Findings**: List any abnormalities or notable features
+3. **Possible Conditions**: Suggest potential diagnoses (ranked by likelihood)
+4. **Recommendations**: Immediate actions and next steps
+5. **Warning Signs**: Red flags to watch for
+6. **Follow-up Care**: When to seek medical attention
+
+Format your response with numbered sections and clear headings for easy reading.
 
 You only need to respond if the image is related to a human body and health issues.
 
-Always write a disclaimer saying: 'Consult with a Doctor before making any decisions.'
+Always include: 'This is AI-generated preliminary analysis. Consult with a healthcare professional for proper diagnosis and treatment.'
 
 If the image is unclear, say: 'Unable to determine based on the provided image.'
       `;
@@ -126,13 +135,13 @@ If the image is unclear, say: 'Unable to determine based on the provided image.'
         <div className="container mx-auto px-4 py-4">
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <Camera className="h-6 w-6 text-blue-600" />
-            <span className="text-xl font-bold text-gray-800">Medical Analysis</span>
+            <span className="text-xl font-bold text-gray-800">AyurGen - Medical Analysis</span>
           </Link>
         </div>
       </nav>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header with animations */}
           <div className="text-center mb-12 animate-fade-in">
             <div className="relative">
@@ -144,7 +153,7 @@ If the image is unclear, say: 'Unable to determine based on the provided image.'
               </div>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Upload medical images for advanced AI-powered analysis and professional recommendations
+              Upload medical images for advanced AI-powered analysis with structured, professional recommendations
             </p>
           </div>
 
@@ -222,47 +231,36 @@ If the image is unclear, say: 'Unable to determine based on the provided image.'
             </Card>
 
             {/* Results Section */}
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center">
-                  <Sparkles className="mr-2 h-5 w-5" />
-                  Analysis Results
-                </CardTitle>
-                <CardDescription className="text-green-100">
-                  AI-generated medical image analysis and recommendations
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6">
-                {analysis ? (
-                  <div className="space-y-6 animate-fade-in">
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-sm text-gray-700 bg-gradient-to-br from-gray-50 to-blue-50 p-6 rounded-lg border-l-4 border-blue-400 shadow-inner">
-                        {analysis}
+            <div className="lg:col-span-1">
+              {analysis ? (
+                <AIResponseDisplay response={analysis} type="medical" />
+              ) : (
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
+                  <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center">
+                      <Sparkles className="mr-2 h-5 w-5" />
+                      Analysis Results
+                    </CardTitle>
+                    <CardDescription className="text-green-100">
+                      AI-generated medical image analysis and recommendations
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="text-center py-16">
+                      <div className="animate-pulse mb-6">
+                        <Camera className="mx-auto h-16 w-16 text-gray-400" />
                       </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                        Ready to Analyze Your Medical Image?
+                      </h3>
+                      <p className="text-gray-500 max-w-md mx-auto">
+                        Upload a medical image and click "Analyze with AI" to get detailed insights with structured formatting
+                      </p>
                     </div>
-                    <Alert className="border-orange-200 bg-orange-50">
-                      <AlertTriangle className="h-4 w-4 text-orange-600" />
-                      <AlertDescription className="text-orange-800">
-                        <strong>Medical Disclaimer:</strong> This analysis is AI-generated and should not replace professional medical advice. 
-                        Always consult with a qualified healthcare provider for accurate diagnosis and treatment.
-                      </AlertDescription>
-                    </Alert>
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <div className="animate-pulse mb-6">
-                      <Camera className="mx-auto h-16 w-16 text-gray-400" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                      Ready to Analyze Your Medical Image?
-                    </h3>
-                    <p className="text-gray-500 max-w-md mx-auto">
-                      Upload a medical image and click "Analyze with AI" to get detailed insights powered by advanced artificial intelligence
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
 
           {/* Features Section */}

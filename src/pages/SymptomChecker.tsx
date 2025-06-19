@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Activity, AlertTriangle, CheckCircle, Sparkles, Heart } from "lucide-react";
+import { Loader2, Activity, AlertTriangle, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import AIResponseDisplay from "@/components/AIResponseDisplay";
 
 const SymptomChecker = () => {
   const [symptoms, setSymptoms] = useState("");
@@ -35,19 +35,25 @@ const SymptomChecker = () => {
     try {
       const prompt = `
 You are an experienced medical professional providing preliminary symptom analysis. 
-Based on the following information, provide a detailed assessment:
+Based on the following information, provide a detailed assessment with clear structure:
 
-Symptoms: ${symptoms}
-Age: ${age || 'Not specified'}
-Gender: ${gender || 'Not specified'}  
-Duration: ${duration || 'Not specified'}
+**Patient Information:**
+- Symptoms: ${symptoms}
+- Age: ${age || 'Not specified'}
+- Gender: ${gender || 'Not specified'}  
+- Duration: ${duration || 'Not specified'}
 
-Please provide:
-1. Possible conditions (ranked by likelihood)
-2. Recommended immediate actions
-3. When to seek medical attention
-4. Self-care suggestions
-5. Warning signs to watch for
+Please provide a structured response with the following sections:
+
+1. **Symptom Summary**: Brief overview of reported symptoms
+2. **Possible Conditions**: List potential conditions ranked by likelihood with brief explanations
+3. **Immediate Actions**: What to do right now
+4. **When to Seek Medical Attention**: Specific scenarios requiring immediate care
+5. **Self-Care Recommendations**: Safe home remedies and general care
+6. **Warning Signs**: Red flags that require emergency care
+7. **Follow-up Suggestions**: Timeline for medical consultation
+
+Format your response with clear headings and numbered sections for easy reading.
 
 IMPORTANT: Always emphasize that this is preliminary analysis only and professional medical consultation is required for proper diagnosis and treatment.
 
@@ -102,13 +108,13 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
         <div className="container mx-auto px-4 py-4">
           <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <Activity className="h-6 w-6 text-red-600" />
-            <span className="text-xl font-bold text-gray-800">AI Symptom Checker</span>
+            <span className="text-xl font-bold text-gray-800">AyurGen - Symptom Checker</span>
           </Link>
         </div>
       </nav>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12 animate-fade-in">
             <div className="relative">
@@ -120,7 +126,7 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
               </div>
             </div>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Get preliminary analysis of your symptoms with AI-powered insights and recommendations
+              Get structured preliminary analysis of your symptoms with AI-powered insights and recommendations
             </p>
           </div>
 
@@ -206,47 +212,36 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
             </Card>
 
             {/* Results Section */}
-            <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
-              <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
-                <CardTitle className="flex items-center">
-                  <CheckCircle className="mr-2 h-5 w-5" />
-                  Analysis Results
-                </CardTitle>
-                <CardDescription className="text-green-100">
-                  AI-generated symptom analysis and recommendations
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="p-6">
-                {analysis ? (
-                  <div className="space-y-6 animate-fade-in">
-                    <div className="prose prose-sm max-w-none">
-                      <div className="whitespace-pre-wrap text-sm text-gray-700 bg-gradient-to-br from-gray-50 to-green-50 p-6 rounded-lg border-l-4 border-green-400 shadow-inner">
-                        {analysis}
+            <div className="lg:col-span-1">
+              {analysis ? (
+                <AIResponseDisplay response={analysis} type="symptom" />
+              ) : (
+                <Card className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
+                  <CardHeader className="bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-t-lg">
+                    <CardTitle className="flex items-center">
+                      <Activity className="mr-2 h-5 w-5" />
+                      Analysis Results
+                    </CardTitle>
+                    <CardDescription className="text-green-100">
+                      AI-generated symptom analysis and recommendations
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="p-6">
+                    <div className="text-center py-16">
+                      <div className="animate-pulse mb-6">
+                        <Activity className="mx-auto h-16 w-16 text-gray-400" />
                       </div>
+                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                        Ready to Analyze Your Symptoms?
+                      </h3>
+                      <p className="text-gray-500 max-w-md mx-auto">
+                        Describe your symptoms and get AI-powered preliminary analysis with structured recommendations
+                      </p>
                     </div>
-                    <Alert className="border-red-200 bg-red-50">
-                      <AlertTriangle className="h-4 w-4 text-red-600" />
-                      <AlertDescription className="text-red-800">
-                        <strong>Medical Disclaimer:</strong> This is AI-generated preliminary analysis only. 
-                        Always consult with a qualified healthcare provider for proper diagnosis and treatment.
-                      </AlertDescription>
-                    </Alert>
-                  </div>
-                ) : (
-                  <div className="text-center py-16">
-                    <div className="animate-pulse mb-6">
-                      <Activity className="mx-auto h-16 w-16 text-gray-400" />
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                      Ready to Analyze Your Symptoms?
-                    </h3>
-                    <p className="text-gray-500 max-w-md mx-auto">
-                      Describe your symptoms and get AI-powered preliminary analysis with actionable recommendations
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
 
           {/* Emergency Alert */}
