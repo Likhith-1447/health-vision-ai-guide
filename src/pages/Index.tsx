@@ -1,7 +1,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Brain, Leaf, Camera, ShoppingCart, Stethoscope, Heart, Activity, Apple, Dumbbell, Sparkles, Zap } from "lucide-react";
+import { Brain, Leaf, Camera, ShoppingCart, Stethoscope, Heart, Activity, Apple, Dumbbell, Sparkles, Zap, User, AlertTriangle } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Index = () => {

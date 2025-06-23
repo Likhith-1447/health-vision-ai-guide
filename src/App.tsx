@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +11,11 @@ import SymptomChecker from "./pages/SymptomChecker";
 import NutritionAdvisor from "./pages/NutritionAdvisor";
 import FitnessPlanner from "./pages/FitnessPlanner";
 import NotFound from "./pages/NotFound";
+import Assistant from "./pages/Assistant";
+import Alerts from "./pages/Alerts";
+import PrakritiTest from "./pages/PrakritiTest";
+import Consultation from "./pages/Consultation";
+import Dashboard from "./pages/Dashboard";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +33,11 @@ const App = () => (
           <Route path="/symptom-checker" element={<SymptomChecker />} />
           <Route path="/nutrition" element={<NutritionAdvisor />} />
           <Route path="/fitness" element={<FitnessPlanner />} />
+          <Route path="/assistant" element={<Assistant />} />
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/prakriti-test" element={<PrakritiTest />} />
+          <Route path="/consultation" element={<Consultation />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
