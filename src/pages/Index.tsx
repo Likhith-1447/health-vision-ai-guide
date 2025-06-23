@@ -2,361 +2,232 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Stethoscope, 
-  Leaf, 
-  Brain, 
-  Activity, 
-  Apple, 
-  Dumbbell,
-  Bot,
-  Bell,
-  Heart,
-  Calendar,
-  BarChart3,
-  Package,
-  Crown,
-  Globe,
-  Star,
-  Zap,
-  Shield,
-  Users,
-  Award,
-  Sparkles
-} from "lucide-react";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Link } from "react-router-dom";
-import LanguageSelector from "@/components/LanguageSelector";
+import { 
+  Camera, 
+  Brain, 
+  Heart, 
+  Stethoscope, 
+  Pill, 
+  Users, 
+  Activity,
+  Sparkles,
+  ArrowRight,
+  Star,
+  Shield,
+  Zap
+} from "lucide-react";
 
 const Index = () => {
   const features = [
     {
-      icon: <Stethoscope className="h-8 w-8" />,
+      icon: Camera,
       title: "AI Medical Analysis",
-      description: "Upload medical images for instant AI-powered analysis and professional insights",
-      link: "/analysis",
-      color: "from-blue-500 to-cyan-500",
-      badge: "Advanced AI"
+      description: "Upload medical images for instant AI-powered analysis with professional accuracy",
+      href: "/analysis",
+      color: "from-blue-500 to-cyan-500"
     },
     {
-      icon: <Bot className="h-8 w-8" />,
-      title: "24/7 Virtual Vaidya",
-      description: "Chat with our AI assistant for real-time Ayurvedic health guidance",
-      link: "/assistant",
-      color: "from-purple-500 to-pink-500",
-      badge: "New"
+      icon: Stethoscope,
+      title: "Symptom Checker",
+      description: "Get personalized health insights based on your symptoms",
+      href: "/symptom-checker",
+      color: "from-green-500 to-emerald-500"
     },
     {
-      icon: <Activity className="h-8 w-8" />,
-      title: "Smart Symptom Checker",
-      description: "Describe your symptoms and get AI-powered health assessments with voice support",
-      link: "/symptom-checker",
-      color: "from-red-500 to-orange-500",
-      badge: "Voice Enabled"
+      icon: Brain,
+      title: "AI Health Assistant",
+      description: "Chat with our AI for personalized health guidance and recommendations",
+      href: "/assistant",
+      color: "from-purple-500 to-pink-500"
     },
     {
-      icon: <Heart className="h-8 w-8" />,
-      title: "Prakriti Assessment",
-      description: "Discover your Ayurvedic body constitution with our comprehensive dosha test",
-      link: "/prakriti-test",
-      color: "from-green-500 to-emerald-500",
-      badge: "Traditional"
+      icon: Heart,
+      title: "Health Recommendations",
+      description: "Receive tailored wellness advice based on Ayurvedic principles",
+      href: "/recommendations",
+      color: "from-red-500 to-orange-500"
     },
     {
-      icon: <Bell className="h-8 w-8" />,
-      title: "Health Alerts & Forecasting",
-      description: "Get predictions about seasonal illnesses and disease outbreaks in your area",
-      link: "/alerts",
-      color: "from-yellow-500 to-amber-500",
-      badge: "Predictive"
+      icon: Pill,
+      title: "Ayurvedic Products",
+      description: "Discover natural remedies and herbs for holistic healing",
+      href: "/products",
+      color: "from-indigo-500 to-purple-500"
     },
     {
-      icon: <Calendar className="h-8 w-8" />,
-      title: "Doctor Consultations",
-      description: "Book appointments with certified Ayurvedic practitioners for personalized care",
-      link: "/consultation",
-      color: "from-indigo-500 to-purple-500",
-      badge: "Professional"
-    },
-    {
-      icon: <BarChart3 className="h-8 w-8" />,
-      title: "Wellness Dashboard",
-      description: "Track your health progress with gamified insights and personalized recommendations",
-      link: "/dashboard",
-      color: "from-teal-500 to-cyan-500",
-      badge: "Gamified"
-    },
-    {
-      icon: <Package className="h-8 w-8" />,
-      title: "Subscription Plans",
-      description: "Monthly wellness packages with auto-delivery and AI-powered follow-ups",
-      link: "/subscriptions",
-      color: "from-pink-500 to-rose-500",
-      badge: "Auto-Delivery"
-    },
-    {
-      icon: <Leaf className="h-8 w-8" />,
-      title: "Ayurvedic Store",
-      description: "Discover authentic Ayurvedic products with AI-powered personalized recommendations",
-      link: "/products",
-      color: "from-emerald-500 to-green-500",
-      badge: "Authentic"
-    },
-    {
-      icon: <Brain className="h-8 w-8" />,
-      title: "AI Health Recommendations",
-      description: "Get personalized wellness insights and lifestyle guidance based on your health data",
-      link: "/recommendations",
-      color: "from-violet-500 to-purple-500",
-      badge: "Personalized"
-    },
-    {
-      icon: <Apple className="h-8 w-8" />,
-      title: "Nutrition AI Advisor",
-      description: "Smart meal planning and dietary guidance tailored to your constitution",
-      link: "/nutrition",
-      color: "from-orange-500 to-red-500",
-      badge: "Smart Planning"
-    },
-    {
-      icon: <Dumbbell className="h-8 w-8" />,
-      title: "AI Fitness Planner",
-      description: "Customized workout routines and fitness tracking integrated with wellness goals",
-      link: "/fitness",
-      color: "from-blue-500 to-indigo-500",
-      badge: "Customized"
+      icon: Users,
+      title: "Expert Consultation",
+      description: "Connect with certified Ayurvedic practitioners for personalized care",
+      href: "/consultation",
+      color: "from-teal-500 to-cyan-500"
     }
   ];
 
   const stats = [
-    { number: "25,000+", label: "Happy Users", icon: <Users className="h-6 w-6" /> },
-    { number: "50,000+", label: "AI Consultations", icon: <Bot className="h-6 w-6" /> },
-    { number: "1,500+", label: "Authentic Products", icon: <Leaf className="h-6 w-6" /> },
-    { number: "95%", label: "User Satisfaction", icon: <Star className="h-6 w-6" /> }
-  ];
-
-  const benefits = [
-    {
-      icon: <Zap className="h-6 w-6 text-yellow-600" />,
-      title: "Instant AI Analysis",
-      description: "Get immediate health insights powered by advanced AI"
-    },
-    {
-      icon: <Shield className="h-6 w-6 text-green-600" />,
-      title: "Privacy Protected",
-      description: "Your health data is secure and never shared"
-    },
-    {
-      icon: <Award className="h-6 w-6 text-purple-600" />,
-      title: "Certified Practitioners",
-      description: "Connect with qualified Ayurvedic doctors"
-    },
-    {
-      icon: <Globe className="h-6 w-6 text-blue-600" />,
-      title: "Multilingual Support",
-      description: "Available in 10+ Indian languages"
-    }
+    { number: "10K+", label: "Active Users", icon: Users },
+    { number: "50K+", label: "Analyses Done", icon: Camera },
+    { number: "95%", label: "Accuracy Rate", icon: Star },
+    { number: "24/7", label: "AI Support", icon: Brain }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-blue-50">
-      {/* Enhanced Navigation */}
-      <nav className="border-b bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3 animate-fade-in">
-              <div className="relative">
-                <Leaf className="h-8 w-8 text-emerald-600" />
-                <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-green-500 animate-pulse" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
-                  AyurGen
-                </h1>
-                <p className="text-xs text-gray-600">AI-Powered Ayurvedic Wellness</p>
-              </div>
+    <div className="flex-1 overflow-auto">
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center gap-4 px-6">
+          <SidebarTrigger className="-ml-1" />
+          <div className="flex items-center space-x-3 animate-fade-in">
+            <div className="relative">
+              <Sparkles className="h-7 w-7 text-primary" />
+              <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
             </div>
-            
-            <div className="flex items-center space-x-4">
-              <LanguageSelector />
-              <Link to="/dashboard">
-                <Button variant="outline" size="sm" className="hover:scale-105 transition-transform">
-                  <BarChart3 className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Button>
-              </Link>
-              <Link to="/subscriptions">
-                <Button size="sm" className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 hover:scale-105 transition-all">
-                  <Crown className="mr-2 h-4 w-4" />
-                  Premium
-                </Button>
-              </Link>
+            <div>
+              <h1 className="text-lg font-semibold text-foreground">
+                AyurGen AI Platform
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Your intelligent health companion
+              </p>
             </div>
           </div>
         </div>
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <section className="py-20 relative overflow-hidden">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto animate-fade-in">
-            <Badge className="mb-6 bg-emerald-100 text-emerald-800 px-4 py-2 hover:scale-105 transition-transform">
-              <Sparkles className="mr-2 h-4 w-4" />
-              Revolutionary AI + Ancient Wisdom
-            </Badge>
-            <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-emerald-600 via-blue-600 to-purple-600 bg-clip-text text-transparent leading-tight">
-              Your Complete<br />Ayurvedic Wellness<br />Companion
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-              Experience the perfect fusion of cutting-edge AI technology and 5000-year-old Ayurvedic wisdom. 
-              Get personalized health insights, connect with certified practitioners, and transform your wellness journey.
+      <main className="flex-1 overflow-auto">
+        <div className="container mx-auto px-6 py-8 max-w-7xl">
+          {/* Hero Section */}
+          <div className="text-center mb-16 space-y-8 animate-fade-in">
+            <div className="relative inline-block">
+              <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
+                AyurGen AI
+              </h1>
+              <div className="absolute -top-4 -right-4 animate-bounce">
+                <Sparkles className="h-12 w-12 text-primary/60 animate-pulse" />
+              </div>
+            </div>
+            <p className="text-xl md:text-2xl text-muted-foreground max-w-4xl mx-auto leading-relaxed">
+              Experience the future of healthcare with AI-powered medical analysis, 
+              personalized Ayurvedic guidance, and intelligent health insights.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/assistant">
-                <Button size="lg" className="bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 hover:scale-105 transition-all text-lg px-8 py-6 shadow-lg">
-                  <Bot className="mr-2 h-5 w-5" />
-                  Start AI Consultation
-                </Button>
-              </Link>
-              <Link to="/prakriti-test">
-                <Button variant="outline" size="lg" className="hover:scale-105 transition-all text-lg px-8 py-6 border-2 border-emerald-200 hover:border-emerald-400">
-                  <Heart className="mr-2 h-5 w-5" />
-                  Discover Your Dosha
-                </Button>
-              </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <Link to="/analysis" className="flex items-center">
+                  Get Started
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 rounded-xl">
+                <Link to="/dashboard">View Dashboard</Link>
+              </Button>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* Stats Section */}
-      <section className="py-16 bg-white/50">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-4 gap-8">
+          {/* Stats Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16">
             {stats.map((stat, index) => (
-              <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <CardContent className="pt-6">
-                  <div className="flex justify-center mb-4 text-emerald-600">
-                    {stat.icon}
-                  </div>
-                  <h3 className="text-3xl font-bold text-gray-800 mb-2">{stat.number}</h3>
-                  <p className="text-gray-600">{stat.label}</p>
+              <Card key={stat.label} className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in hover-lift" style={{ animationDelay: `${index * 0.1}s` }}>
+                <CardContent className="p-6">
+                  <stat.icon className="h-8 w-8 text-primary mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-foreground mb-1">{stat.number}</div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* Features Grid */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
-              Complete Wellness Ecosystem
-            </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              From AI-powered health analysis to traditional Ayurvedic consultations - everything you need for holistic wellness
-            </p>
-          </div>
+          {/* Features Grid */}
+          <div className="mb-16">
+            <div className="text-center mb-12 space-y-4 animate-fade-in">
+              <h2 className="text-4xl font-bold text-foreground">
+                Comprehensive Health Solutions
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+                Discover our suite of AI-powered tools designed to revolutionize your healthcare experience
+              </p>
+            </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feature, index) => (
-              <Link key={index} to={feature.link}>
-                <Card className="h-full border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:scale-105 cursor-pointer bg-gradient-to-br from-white to-gray-50 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                  <CardHeader className="relative">
-                    <div className="absolute top-4 right-4">
-                      <Badge className="bg-gradient-to-r from-emerald-100 to-blue-100 text-emerald-800 text-xs">
-                        {feature.badge}
-                      </Badge>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {features.map((feature, index) => (
+                <Card key={feature.title} className="group border-0 shadow-lg hover:shadow-2xl transition-all duration-500 animate-scale-in hover-lift cursor-pointer" style={{ animationDelay: `${index * 0.1}s` }}>
+                  <CardHeader className="relative overflow-hidden">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${feature.color} opacity-5 group-hover:opacity-10 transition-opacity duration-300`}></div>
+                    <div className={`h-14 w-14 rounded-xl bg-gradient-to-r ${feature.color} p-3 mb-4 shadow-lg transform group-hover:scale-110 transition-transform duration-300 relative z-10`}>
+                      <feature.icon className="h-8 w-8 text-white" />
                     </div>
-                    <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${feature.color} p-4 text-white mb-4 hover:scale-110 transition-transform`}>
-                      {feature.icon}
-                    </div>
-                    <CardTitle className="text-xl text-gray-800">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-gray-600 leading-relaxed">
+                    <CardTitle className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors relative z-10">
+                      {feature.title}
+                    </CardTitle>
+                    <CardDescription className="text-muted-foreground relative z-10">
                       {feature.description}
                     </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300">
+                      <Link to={feature.href} className="flex items-center justify-center">
+                        Explore
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </Button>
                   </CardContent>
                 </Card>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-r from-emerald-50 to-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16 animate-fade-in">
-            <h2 className="text-4xl font-bold text-gray-800 mb-4">Why Choose AyurGen?</h2>
-            <p className="text-lg text-gray-600">Experience the future of personalized healthcare</p>
+              ))}
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {benefits.map((benefit, index) => (
-              <Card key={index} className="text-center border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                <CardContent className="pt-8 pb-6">
-                  <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    {benefit.icon}
-                  </div>
-                  <h3 className="font-semibold text-gray-800 mb-2">{benefit.title}</h3>
-                  <p className="text-sm text-gray-600">{benefit.description}</p>
+          {/* Trust Indicators */}
+          <div className="grid md:grid-cols-3 gap-8 mb-16">
+            {[
+              {
+                icon: Shield,
+                title: "Secure & Private",
+                description: "Your health data is protected with enterprise-grade security and complete privacy."
+              },
+              {
+                icon: Zap,
+                title: "Lightning Fast",
+                description: "Get instant results with our optimized AI models trained on medical expertise."
+              },
+              {
+                icon: Star,
+                title: "Clinically Validated",
+                description: "Our AI recommendations are backed by scientific research and medical validation."
+              }
+            ].map((indicator, index) => (
+              <Card key={indicator.title} className="text-center border-0 shadow-lg animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                <CardContent className="p-8">
+                  <indicator.icon className="h-12 w-12 text-primary mx-auto mb-4" />
+                  <h3 className="text-xl font-semibold text-foreground mb-3">{indicator.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{indicator.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-emerald-600 to-blue-600 text-white">
-        <div className="container mx-auto px-4 text-center">
-          <div className="max-w-3xl mx-auto animate-fade-in">
-            <h2 className="text-4xl font-bold mb-6">Ready to Transform Your Health?</h2>
-            <p className="text-xl mb-8 opacity-90">
-              Join thousands who have already discovered the power of AI-enhanced Ayurvedic wellness
+          {/* CTA Section */}
+          <div className="text-center bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-2xl p-12 border border-primary/20 animate-fade-in">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Ready to Transform Your Health Journey?
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Join thousands of users who trust AyurGen AI for their healthcare needs. 
+              Start your personalized wellness journey today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/assistant">
-                <Button size="lg" variant="secondary" className="hover:scale-105 transition-all text-lg px-8 py-6 bg-white text-emerald-600 hover:bg-gray-100">
-                  <Bot className="mr-2 h-5 w-5" />
-                  Start Free AI Consultation
-                </Button>
-              </Link>
-              <Link to="/subscriptions">
-                <Button size="lg" variant="outline" className="hover:scale-105 transition-all text-lg px-8 py-6 border-2 border-white text-white hover:bg-white hover:text-emerald-600">
-                  <Crown className="mr-2 h-5 w-5" />
-                  Explore Premium Plans
-                </Button>
-              </Link>
+              <Button asChild size="lg" className="bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-lg px-8 py-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <Link to="/analysis" className="flex items-center">
+                  Start Analysis
+                  <Camera className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 rounded-xl">
+                <Link to="/consultation">Book Consultation</Link>
+              </Button>
             </div>
           </div>
         </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center">
-            <div className="flex items-center justify-center space-x-3 mb-4">
-              <Leaf className="h-8 w-8 text-emerald-400" />
-              <span className="text-2xl font-bold">AyurGen</span>
-            </div>
-            <p className="text-gray-400 mb-6">
-              Bridging ancient Ayurvedic wisdom with modern AI technology for complete wellness
-            </p>
-            <div className="flex justify-center space-x-6 text-sm text-gray-400">
-              <span>© 2024 AyurGen. All rights reserved.</span>
-              <span>•</span>
-              <span>Privacy Policy</span>
-              <span>•</span>
-              <span>Terms of Service</span>
-            </div>
-          </div>
-        </div>
-      </footer>
+      </main>
     </div>
   );
 };
