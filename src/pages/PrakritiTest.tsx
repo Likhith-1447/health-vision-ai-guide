@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Leaf, User, Brain, Heart, Zap, Wind, Fire, Mountain } from "lucide-react";
+import { Leaf, User, Brain, Heart, Zap, Wind, Flame, Mountain } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
@@ -181,7 +180,7 @@ const PrakritiTest = () => {
         return {
           name: 'Pitta',
           element: 'Fire & Water',
-          icon: <Fire className="h-8 w-8" />,
+          icon: <Flame className="h-8 w-8" />,
           color: 'text-red-600',
           bgColor: 'bg-red-50',
           borderColor: 'border-red-200',
@@ -262,7 +261,7 @@ const PrakritiTest = () => {
               <div>
                 <div className="flex justify-between items-center mb-2">
                   <span className="flex items-center space-x-2">
-                    <Fire className="h-4 w-4 text-red-600" />
+                    <Flame className="h-4 w-4 text-red-600" />
                     <span>Pitta</span>
                   </span>
                   <span>{results.pitta}/{questions.length}</span>
