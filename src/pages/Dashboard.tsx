@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -21,6 +20,7 @@ import {
   Bell
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import HealthGamification from "@/components/HealthGamification";
 
 interface HealthMetric {
   date: string;
@@ -111,6 +111,11 @@ const Dashboard = () => {
             <p className="text-lg text-gray-600">
               Welcome back! Here's your personalized health overview for today.
             </p>
+          </div>
+
+          {/* Gamification Section */}
+          <div className="mb-8">
+            <HealthGamification />
           </div>
 
           {/* Health Score & Quick Stats */}

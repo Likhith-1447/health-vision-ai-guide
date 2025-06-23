@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +17,8 @@ import Alerts from "./pages/Alerts";
 import PrakritiTest from "./pages/PrakritiTest";
 import Consultation from "./pages/Consultation";
 import Dashboard from "./pages/Dashboard";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
+import AdminAnalytics from "./pages/AdminAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +41,8 @@ const App = () => (
           <Route path="/prakriti-test" element={<PrakritiTest />} />
           <Route path="/consultation" element={<Consultation />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/subscriptions" element={<SubscriptionPlans />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
