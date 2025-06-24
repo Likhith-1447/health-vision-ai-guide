@@ -320,12 +320,12 @@ const Alerts = () => {
     };
   };
 
-  const generateLocationBasedAlerts = (locationData: any) => {
-    const baseAlerts = [
+  const generateLocationBasedAlerts = (locationData: any): HealthAlert[] => {
+    const baseAlerts: HealthAlert[] = [
       {
         id: '1',
         disease: 'Seasonal Flu',
-        risk: 'medium' as const,
+        risk: 'medium',
         region: locationData.location,
         description: `Seasonal flu cases increasing in ${locationData.location} due to weather changes. Monitor symptoms closely.`,
         prevention: ['Maintain hygiene', 'Boost immunity', 'Stay hydrated', 'Avoid crowded places'],
