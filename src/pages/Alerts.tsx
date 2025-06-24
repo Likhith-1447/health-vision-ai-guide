@@ -339,7 +339,7 @@ const Alerts = () => {
       baseAlerts.push({
         id: '2',
         disease: 'Monsoon-related Diseases',
-        risk: 'high' as const,
+        risk: 'high',
         region: locationData.location,
         description: 'High humidity and monsoon conditions in Maharashtra increase risk of water-borne diseases.',
         prevention: ['Drink boiled water', 'Avoid street food', 'Keep surroundings dry', 'Use mosquito protection'],
@@ -350,7 +350,7 @@ const Alerts = () => {
       baseAlerts.push({
         id: '2',
         disease: 'Air Pollution Effects',
-        risk: 'high' as const,
+        risk: 'high',
         region: locationData.location,
         description: 'High air pollution levels in Delhi may cause respiratory issues and eye irritation.',
         prevention: ['Wear N95 masks', 'Use air purifiers', 'Limit outdoor activities', 'Stay hydrated'],
@@ -361,7 +361,7 @@ const Alerts = () => {
       baseAlerts.push({
         id: '2',
         disease: 'Heat-related Illness',
-        risk: 'medium' as const,
+        risk: 'medium',
         region: locationData.location,
         description: 'High temperatures in Tamil Nadu may cause heat exhaustion and dehydration.',
         prevention: ['Stay indoors during peak hours', 'Drink plenty of water', 'Wear light clothing', 'Avoid direct sun'],
