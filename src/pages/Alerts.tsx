@@ -1,11 +1,10 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { MapPin, AlertTriangle, TrendingUp, Shield, Calendar, Bell, Thermometer, Droplets, Sparkles, Loader2 } from "lucide-react";
+import { MapPin, AlertTriangle, TrendingUp, Shield, Calendar, Bell, Thermometer, Droplets, Sparkles, Loader2, RefreshCw } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 interface HealthAlert {
@@ -22,97 +21,227 @@ interface HealthAlert {
 const Alerts = () => {
   const [location, setLocation] = useState("Detecting location...");
   const [alerts, setAlerts] = useState<HealthAlert[]>([]);
-  const [weatherData, setWeatherData] = useState<any>(null);
   const [loadingLocation, setLoadingLocation] = useState(true);
+  const [locationError, setLocationError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Get user's location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
+  const detectLocation = async () => {
+    setLoadingLocation(true);
+    setLocationError(null);
+    
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by this browser");
+      setLocation("Location not available");
+      setLoadingLocation(false);
+      return;
+    }
+
+    const options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 300000 // 5 minutes cache
+    };
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log(`Detected coordinates: ${latitude}, ${longitude}`);
+        
+        try {
+          // Use multiple location services for better accuracy
+          let detectedLocation = "Unknown Location";
           
-          try {
-            // Get location name from coordinates
-            const locationResponse = await fetch(
-              `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=your-api-key`
-            );
-            
-            // Simulate location-based alerts (since we don't have real API keys)
-            setTimeout(() => {
-              const detectedCity = "Hyderabad"; // Simulated
-              setLocation(`${detectedCity}, Telangana`);
-              
-              // Generate location-specific alerts
-              const locationAlerts = [
-                {
-                  id: '1',
-                  disease: 'Dengue Fever',
-                  risk: 'high' as const,
-                  region: `${detectedCity} Metro`,
-                  description: `Monsoon season increases dengue risk in ${detectedCity} due to stagnant water. Cases reported 40% higher than last year in this region.`,
-                  prevention: ['Remove stagnant water', 'Use mosquito nets', 'Wear full sleeves', 'Apply repellent'],
-                  ayurvedicRemedies: ['Tulsi leaves tea', 'Giloy juice', 'Papaya leaf extract', 'Neem oil application'],
-                  timeline: 'Next 2-3 weeks'
-                },
-                {
-                  id: '2',
-                  disease: 'Viral Fever',
-                  risk: 'medium' as const,
-                  region: 'South India',
-                  description: `Seasonal flu outbreak expected in ${detectedCity} due to weather changes and increased air pollution.`,
-                  prevention: ['Maintain hygiene', 'Avoid crowded places', 'Boost immunity', 'Stay hydrated'],
-                  ayurvedicRemedies: ['Ginger-honey tea', 'Turmeric milk', 'Amla juice', 'Brahmi for recovery'],
-                  timeline: 'This week'
-                },
-                {
-                  id: '3',
-                  disease: 'Air Pollution Related Issues',
-                  risk: 'medium' as const,
-                  region: `${detectedCity} Urban Areas`,
-                  description: `Air quality deterioration in ${detectedCity} may trigger asthma and breathing problems in sensitive individuals.`,
-                  prevention: ['Wear N95 masks', 'Stay indoors during peak pollution', 'Use air purifiers', 'Practice breathing exercises'],
-                  ayurvedicRemedies: ['Vasaka (Adhatoda) tea', 'Mulethi (Licorice)', 'Steam with eucalyptus', 'Pranayama exercises'],
-                  timeline: 'Ongoing'
-                }
-              ];
-              
-              setAlerts(locationAlerts);
-              setLoadingLocation(false);
-            }, 2000);
-            
-          } catch (error) {
-            console.error('Error fetching location:', error);
-            // Fallback to default location
-            setLocation("Hyderabad, Telangana");
-            setLoadingLocation(false);
-          }
-        },
-        (error) => {
-          console.error('Geolocation error:', error);
-          // Fallback to default location
-          setLocation("Location access denied - Using default region");
+          // Try first with a geocoding service simulation
+          // In a real app, you'd use services like:
+          // - Google Maps Geocoding API
+          // - OpenCage Geocoding API
+          // - Mapbox Geocoding API
+          
+          // Simulate location detection based on coordinates
+          const locationData = await simulateLocationDetection(latitude, longitude);
+          detectedLocation = locationData.location;
+          
+          setLocation(detectedLocation);
+          
+          // Generate location-specific alerts
+          const locationAlerts = generateLocationBasedAlerts(locationData);
+          setAlerts(locationAlerts);
           setLoadingLocation(false);
           
-          // Set default alerts
-          setAlerts([
-            {
-              id: '1',
-              disease: 'Seasonal Flu',
-              risk: 'medium',
-              region: 'General Region',
-              description: 'Seasonal flu cases are increasing. General prevention measures recommended.',
-              prevention: ['Maintain hygiene', 'Boost immunity', 'Stay hydrated', 'Avoid crowded places'],
-              ayurvedicRemedies: ['Ginger tea', 'Turmeric milk', 'Tulsi leaves', 'Honey with warm water'],
-              timeline: 'This week'
-            }
-          ]);
+        } catch (error) {
+          console.error('Error fetching location details:', error);
+          setLocationError("Could not determine precise location");
+          setLocation(`Coordinates: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`);
+          
+          // Generate generic alerts based on coordinates
+          const genericAlerts = generateGenericAlerts(latitude, longitude);
+          setAlerts(genericAlerts);
+          setLoadingLocation(false);
         }
-      );
-    } else {
-      setLocation("Geolocation not supported");
-      setLoadingLocation(false);
+      },
+      (error) => {
+        console.error('Geolocation error:', error);
+        let errorMessage = "Location access denied";
+        
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            errorMessage = "Location access denied by user";
+            break;
+          case error.POSITION_UNAVAILABLE:
+            errorMessage = "Location information unavailable";
+            break;
+          case error.TIMEOUT:
+            errorMessage = "Location request timed out";
+            break;
+          default:
+            errorMessage = "Unknown location error";
+        }
+        
+        setLocationError(errorMessage);
+        setLocation("Location not available");
+        setLoadingLocation(false);
+        
+        // Set default alerts
+        setAlerts(getDefaultAlerts());
+      },
+      options
+    );
+  };
+
+  // Simulate location detection with more accurate regional mapping
+  const simulateLocationDetection = async (lat: number, lon: number) => {
+    // India regional boundaries (simplified)
+    const regions = [
+      { name: "Mumbai, Maharashtra", bounds: { minLat: 18.8, maxLat: 19.3, minLon: 72.7, maxLon: 73.1 } },
+      { name: "Delhi, Delhi", bounds: { minLat: 28.4, maxLat: 28.9, minLon: 76.8, maxLon: 77.5 } },
+      { name: "Bangalore, Karnataka", bounds: { minLat: 12.8, maxLat: 13.2, minLon: 77.4, maxLon: 77.8 } },
+      { name: "Chennai, Tamil Nadu", bounds: { minLat: 12.8, maxLat: 13.3, minLon: 80.1, maxLon: 80.4 } },
+      { name: "Kolkata, West Bengal", bounds: { minLat: 22.4, maxLat: 22.7, minLon: 88.2, maxLon: 88.5 } },
+      { name: "Hyderabad, Telangana", bounds: { minLat: 17.2, maxLat: 17.6, minLon: 78.2, maxLon: 78.7 } },
+      { name: "Pune, Maharashtra", bounds: { minLat: 18.4, maxLat: 18.7, minLon: 73.7, maxLon: 74.0 } },
+      { name: "Ahmedabad, Gujarat", bounds: { minLat: 22.9, maxLat: 23.2, minLon: 72.4, maxLon: 72.8 } },
+    ];
+
+    // Find matching region
+    const detectedRegion = regions.find(region => 
+      lat >= region.bounds.minLat && lat <= region.bounds.maxLat &&
+      lon >= region.bounds.minLon && lon <= region.bounds.maxLon
+    );
+
+    if (detectedRegion) {
+      return {
+        location: detectedRegion.name,
+        coordinates: { lat, lon },
+        type: 'city'
+      };
     }
+
+    // If no specific city found, determine state/region
+    let location = "Unknown Location, India";
+    if (lat >= 8 && lat <= 37 && lon >= 68 && lon <= 97) {
+      // Within India bounds
+      if (lat >= 20 && lat <= 30) {
+        location = "Central India";
+      } else if (lat >= 10 && lat < 20) {
+        location = "South India";
+      } else if (lat >= 30) {
+        location = "North India";
+      } else {
+        location = "South India";
+      }
+    }
+
+    return {
+      location,
+      coordinates: { lat, lon },
+      type: 'region'
+    };
+  };
+
+  const generateLocationBasedAlerts = (locationData: any) => {
+    const baseAlerts = [
+      {
+        id: '1',
+        disease: 'Seasonal Flu',
+        risk: 'medium' as const,
+        region: locationData.location,
+        description: `Seasonal flu cases increasing in ${locationData.location} due to weather changes. Monitor symptoms closely.`,
+        prevention: ['Maintain hygiene', 'Boost immunity', 'Stay hydrated', 'Avoid crowded places'],
+        ayurvedicRemedies: ['Ginger-honey tea', 'Turmeric milk', 'Tulsi leaves', 'Amla juice'],
+        timeline: 'This week'
+      }
+    ];
+
+    // Add region-specific alerts
+    if (locationData.location.includes('Mumbai') || locationData.location.includes('Maharashtra')) {
+      baseAlerts.push({
+        id: '2',
+        disease: 'Monsoon-related Diseases',
+        risk: 'high' as const,
+        region: locationData.location,
+        description: 'High humidity and monsoon conditions in Maharashtra increase risk of water-borne diseases.',
+        prevention: ['Drink boiled water', 'Avoid street food', 'Keep surroundings dry', 'Use mosquito protection'],
+        ayurvedicRemedies: ['Neem leaves', 'Tulsi water', 'Triphala powder', 'Giloy juice'],
+        timeline: 'Monsoon season'
+      });
+    } else if (locationData.location.includes('Delhi')) {
+      baseAlerts.push({
+        id: '2',
+        disease: 'Air Pollution Effects',
+        risk: 'high' as const,
+        region: locationData.location,
+        description: 'High air pollution levels in Delhi may cause respiratory issues and eye irritation.',
+        prevention: ['Wear N95 masks', 'Use air purifiers', 'Limit outdoor activities', 'Stay hydrated'],
+        ayurvedicRemedies: ['Vasaka tea', 'Mulethi powder', 'Steam inhalation', 'Pranayama exercises'],
+        timeline: 'Winter months'
+      });
+    } else if (locationData.location.includes('Chennai') || locationData.location.includes('Tamil Nadu')) {
+      baseAlerts.push({
+        id: '2',
+        disease: 'Heat-related Illness',
+        risk: 'medium' as const,
+        region: locationData.location,
+        description: 'High temperatures in Tamil Nadu may cause heat exhaustion and dehydration.',
+        prevention: ['Stay indoors during peak hours', 'Drink plenty of water', 'Wear light clothing', 'Avoid direct sun'],
+        ayurvedicRemedies: ['Coconut water', 'Cucumber juice', 'Mint leaves', 'Aloe vera juice'],
+        timeline: 'Summer months'
+      });
+    }
+
+    return baseAlerts;
+  };
+
+  const generateGenericAlerts = (lat: number, lon: number) => {
+    return [
+      {
+        id: '1',
+        disease: 'Seasonal Health Advisory',
+        risk: 'medium' as const,
+        region: `Region (${lat.toFixed(2)}, ${lon.toFixed(2)})`,
+        description: 'General health advisory based on your location coordinates.',
+        prevention: ['Maintain good hygiene', 'Boost immunity', 'Stay hydrated', 'Regular exercise'],
+        ayurvedicRemedies: ['Ginger tea', 'Turmeric milk', 'Tulsi leaves', 'Amla'],
+        timeline: 'Ongoing'
+      }
+    ];
+  };
+
+  const getDefaultAlerts = () => {
+    return [
+      {
+        id: '1',
+        disease: 'General Health Advisory',
+        risk: 'low' as const,
+        region: 'Your Area',
+        description: 'General health precautions and wellness tips for maintaining good health.',
+        prevention: ['Maintain hygiene', 'Balanced diet', 'Regular exercise', 'Adequate sleep'],
+        ayurvedicRemedies: ['Daily meditation', 'Herbal teas', 'Balanced dosha diet', 'Yoga practice'],
+        timeline: 'Daily'
+      }
+    ];
+  };
+
+  useEffect(() => {
+    detectLocation();
   }, []);
 
   const getRiskColor = (risk: string) => {
@@ -192,12 +321,31 @@ const Alerts = () => {
                     <span className="font-semibold">Current Location:</span>
                     <span>{location}</span>
                   </div>
+                  {!loadingLocation && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={detectLocation}
+                      className="flex items-center space-x-1"
+                    >
+                      <RefreshCw className="h-3 w-3" />
+                      <span>Refresh</span>
+                    </Button>
+                  )}
                 </div>
                 <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-400 dark:border-green-800">
                   <Calendar className="h-3 w-3 mr-1" />
-                  Updated Today
+                  Updated Now
                 </Badge>
               </div>
+              {locationError && (
+                <Alert className="mt-4 border-yellow-200 bg-yellow-50 dark:border-yellow-800 dark:bg-yellow-950/20">
+                  <AlertTriangle className="h-4 w-4 text-yellow-600" />
+                  <AlertDescription className="text-yellow-800 dark:text-yellow-200">
+                    {locationError}. Showing general health alerts.
+                  </AlertDescription>
+                </Alert>
+              )}
             </CardContent>
           </Card>
 
@@ -205,8 +353,8 @@ const Alerts = () => {
           <Alert className="mb-8 border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/20">
             <Thermometer className="h-4 w-4 text-blue-600" />
             <AlertDescription className="text-blue-800 dark:text-blue-200">
-              <strong>Weather Impact:</strong> Current monsoon conditions with high humidity (78%) and temperature fluctuations 
-              may increase vector-borne disease risks. Enhanced vigilance recommended for your location.
+              <strong>Weather Impact:</strong> Current environmental conditions may influence health risks in your area. 
+              Stay updated with local health advisories.
             </AlertDescription>
           </Alert>
 
