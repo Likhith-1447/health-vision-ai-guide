@@ -5,9 +5,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { MessageCircle, Send, Mic, MicOff, Bot, User, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface Message {
   id: string;
@@ -149,140 +150,159 @@ Provide a helpful, compassionate response:
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50">
-      {/* Navigation */}
-      <nav className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <MessageCircle className="h-6 w-6 text-green-600" />
-            <span className="text-xl font-bold text-gray-800">AyurGen - AI Health Assistant</span>
-          </Link>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
-        {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="relative inline-block">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-              24/7 Virtual Vaidya
-            </h1>
-            <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-green-400 animate-pulse" />
+    <div className="flex-1 overflow-auto">
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center justify-between gap-4 px-6">
+          <div className="flex items-center gap-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center space-x-3 animate-fade-in">
+              <div className="relative">
+                <MessageCircle className="h-7 w-7 text-primary" />
+                <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-green-500 animate-pulse" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-foreground">
+                  AI Health Assistant
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  24/7 Virtual Vaidya
+                </p>
+              </div>
+            </div>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Your personal AI health assistant combining modern medicine with ancient Ayurvedic wisdom
-          </p>
+          
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+          </div>
         </div>
+      </header>
 
-        {/* Chat Interface */}
-        <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-t-lg">
-            <CardTitle className="flex items-center">
-              <Bot className="mr-2 h-5 w-5" />
-              AyurGen Assistant
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            {/* Messages */}
-            <ScrollArea className="h-96 p-4">
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message.id}
-                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                  >
-                    <div className={`flex items-start space-x-2 max-w-xs lg:max-w-md ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className={message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-green-500 text-white'}>
-                          {message.sender === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div
-                        className={`rounded-lg p-3 ${
-                          message.sender === 'user'
-                            ? 'bg-blue-500 text-white'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                        <p className="text-xs opacity-70 mt-1">
-                          {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                {loading && (
-                  <div className="flex justify-start">
-                    <div className="flex items-start space-x-2">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback className="bg-green-500 text-white">
-                          <Bot className="h-4 w-4" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="bg-gray-100 rounded-lg p-3">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+      <main className="flex-1 overflow-auto">
+        <div className="container mx-auto px-6 py-8 max-w-4xl">
+          {/* Header */}
+          <div className="text-center mb-8 animate-fade-in">
+            <div className="relative inline-block">
+              <h1 className="text-4xl font-bold text-foreground mb-4 bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
+                24/7 Virtual Vaidya
+              </h1>
+              <Sparkles className="absolute -top-2 -right-2 h-6 w-6 text-green-400 animate-pulse" />
+            </div>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Your personal AI health assistant combining modern medicine with ancient Ayurvedic wisdom
+            </p>
+          </div>
+
+          {/* Chat Interface */}
+          <Card className="border-0 shadow-xl hover:shadow-2xl transition-all duration-300">
+            <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white rounded-t-lg">
+              <CardTitle className="flex items-center">
+                <Bot className="mr-2 h-5 w-5" />
+                AyurGen Assistant
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              {/* Messages */}
+              <ScrollArea className="h-96 p-4">
+                <div className="space-y-4">
+                  {messages.map((message) => (
+                    <div
+                      key={message.id}
+                      className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    >
+                      <div className={`flex items-start space-x-2 max-w-xs lg:max-w-md ${message.sender === 'user' ? 'flex-row-reverse space-x-reverse' : ''}`}>
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className={message.sender === 'user' ? 'bg-blue-500 text-white' : 'bg-green-500 text-white'}>
+                            {message.sender === 'user' ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div
+                          className={`rounded-lg p-3 ${
+                            message.sender === 'user'
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-muted text-foreground border'
+                          }`}
+                        >
+                          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                          <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-blue-100' : 'text-muted-foreground'}`}>
+                            {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </p>
                         </div>
                       </div>
                     </div>
-                  </div>
-                )}
-              </div>
-              <div ref={messagesEndRef} />
-            </ScrollArea>
+                  ))}
+                  {loading && (
+                    <div className="flex justify-start">
+                      <div className="flex items-start space-x-2">
+                        <Avatar className="h-8 w-8">
+                          <AvatarFallback className="bg-green-500 text-white">
+                            <Bot className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="bg-muted rounded-lg p-3 border">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div ref={messagesEndRef} />
+              </ScrollArea>
 
-            {/* Input */}
-            <div className="border-t p-4">
-              <div className="flex space-x-2">
-                <Input
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Ask about symptoms, Ayurveda, nutrition, or any health question..."
-                  onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-                  className="flex-1"
-                />
-                <Button
-                  onClick={startListening}
-                  variant="outline"
-                  size="icon"
-                  className={isListening ? 'bg-red-100 border-red-300' : ''}
-                  disabled={loading}
-                >
-                  {isListening ? <MicOff className="h-4 w-4 text-red-600" /> : <Mic className="h-4 w-4" />}
-                </Button>
-                <Button onClick={sendMessage} disabled={!input.trim() || loading}>
-                  <Send className="h-4 w-4" />
-                </Button>
+              {/* Input */}
+              <div className="border-t p-4">
+                <div className="flex space-x-2">
+                  <Input
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    placeholder="Ask about symptoms, Ayurveda, nutrition, or any health question..."
+                    onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={startListening}
+                    variant="outline"
+                    size="icon"
+                    className={isListening ? 'bg-red-100 border-red-300 dark:bg-red-950/20' : ''}
+                    disabled={loading}
+                  >
+                    {isListening ? <MicOff className="h-4 w-4 text-red-600" /> : <Mic className="h-4 w-4" />}
+                  </Button>
+                  <Button onClick={sendMessage} disabled={!input.trim() || loading}>
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
 
-        {/* Quick Actions */}
-        <div className="mt-8 grid md:grid-cols-3 gap-4">
-          <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => setInput("What are some natural remedies for stress and anxiety?")}>
-            <CardContent className="p-4 text-center">
-              <h3 className="font-semibold text-gray-800 mb-2">Stress Relief</h3>
-              <p className="text-sm text-gray-600">Natural remedies for anxiety</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => setInput("Can you help me understand my dosha type?")}>
-            <CardContent className="p-4 text-center">
-              <h3 className="font-semibold text-gray-800 mb-2">Dosha Analysis</h3>
-              <p className="text-sm text-gray-600">Understand your body type</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => setInput("What should I eat for better digestion according to Ayurveda?")}>
-            <CardContent className="p-4 text-center">
-              <h3 className="font-semibold text-gray-800 mb-2">Digestive Health</h3>
-              <p className="text-sm text-gray-600">Ayurvedic nutrition tips</p>
-            </CardContent>
-          </Card>
+          {/* Quick Actions */}
+          <div className="mt-8 grid md:grid-cols-3 gap-4">
+            <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => setInput("What are some natural remedies for stress and anxiety?")}>
+              <CardContent className="p-4 text-center">
+                <h3 className="font-semibold text-foreground mb-2">Stress Relief</h3>
+                <p className="text-sm text-muted-foreground">Natural remedies for anxiety</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => setInput("Can you help me understand my dosha type?")}>
+              <CardContent className="p-4 text-center">
+                <h3 className="font-semibold text-foreground mb-2">Dosha Analysis</h3>
+                <p className="text-sm text-muted-foreground">Understand your body type</p>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer" onClick={() => setInput("What should I eat for better digestion according to Ayurveda?")}>
+              <CardContent className="p-4 text-center">
+                <h3 className="font-semibold text-foreground mb-2">Digestive Health</h3>
+                <p className="text-sm text-muted-foreground">Ayurvedic nutrition tips</p>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

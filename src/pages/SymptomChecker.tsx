@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,10 +6,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, Activity, AlertTriangle, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
+import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Loader2, Activity, AlertTriangle, Sparkles, User, UserCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AIResponseDisplay from "@/components/AIResponseDisplay";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const SymptomChecker = () => {
   const [symptoms, setSymptoms] = useState("");
@@ -102,30 +104,47 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-pink-50">
-      {/* Navigation */}
-      <nav className="border-b bg-white/95 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <Link to="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <Activity className="h-6 w-6 text-red-600" />
-            <span className="text-xl font-bold text-gray-800">AyurGen - Symptom Checker</span>
-          </Link>
+    <div className="flex-1 overflow-auto">
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex h-16 items-center justify-between gap-4 px-6">
+          <div className="flex items-center gap-4">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center space-x-3 animate-fade-in">
+              <div className="relative">
+                <Activity className="h-7 w-7 text-primary" />
+                <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-red-500 animate-pulse" />
+              </div>
+              <div>
+                <h1 className="text-lg font-semibold text-foreground">
+                  Symptom Checker
+                </h1>
+                <p className="text-sm text-muted-foreground">
+                  AI-powered symptom analysis
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+          </div>
         </div>
-      </nav>
+      </header>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+      <main className="flex-1 overflow-auto">
+        <div className="container mx-auto px-6 py-8 max-w-7xl">
           {/* Header */}
           <div className="text-center mb-12 animate-fade-in">
             <div className="relative">
-              <h1 className="text-5xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-5xl font-bold text-foreground mb-4 bg-gradient-to-r from-red-600 to-pink-600 bg-clip-text text-transparent">
                 AI-Powered Symptom Analysis
               </h1>
               <div className="absolute -top-4 -right-4">
                 <Sparkles className="h-8 w-8 text-red-400 animate-pulse" />
               </div>
             </div>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
               Get structured preliminary analysis of your symptoms with AI-powered insights and recommendations
             </p>
           </div>
@@ -167,17 +186,27 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="gender">Gender</Label>
-                    <select
-                      id="gender"
-                      value={gender}
-                      onChange={(e) => setGender(e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    >
-                      <option value="">Select gender</option>
-                      <option value="male">Male</option>
-                      <option value="female">Female</option>
-                      <option value="other">Other</option>
-                    </select>
+                    <div className="grid grid-cols-3 gap-2">
+                      {[
+                        { value: 'male', label: 'Male', icon: User },
+                        { value: 'female', label: 'Female', icon: UserCheck },
+                        { value: 'other', label: 'Other', icon: User }
+                      ].map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => setGender(option.value)}
+                          className={`p-3 rounded-lg border-2 transition-all duration-300 flex flex-col items-center gap-2 ${
+                            gender === option.value
+                              ? 'border-red-500 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400'
+                              : 'border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-600 text-muted-foreground hover:text-red-500 dark:hover:text-red-400'
+                          }`}
+                        >
+                          <option.icon className="h-4 w-4" />
+                          <span className="text-xs font-medium">{option.label}</span>
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -229,12 +258,12 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
                   <CardContent className="p-6">
                     <div className="text-center py-16">
                       <div className="animate-pulse mb-6">
-                        <Activity className="mx-auto h-16 w-16 text-gray-400" />
+                        <Activity className="mx-auto h-16 w-16 text-muted-foreground" />
                       </div>
-                      <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                      <h3 className="text-xl font-semibold text-foreground mb-3">
                         Ready to Analyze Your Symptoms?
                       </h3>
-                      <p className="text-gray-500 max-w-md mx-auto">
+                      <p className="text-muted-foreground max-w-md mx-auto">
                         Describe your symptoms and get AI-powered preliminary analysis with structured recommendations
                       </p>
                     </div>
@@ -245,15 +274,15 @@ Include disclaimer: "This is AI-generated preliminary analysis. Consult a health
           </div>
 
           {/* Emergency Alert */}
-          <Alert className="mt-12 border-red-500 bg-red-50">
+          <Alert className="mt-12 border-red-500 bg-red-50 dark:bg-red-950/20">
             <AlertTriangle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">
+            <AlertDescription className="text-red-800 dark:text-red-200">
               <strong>Emergency Warning:</strong> If you're experiencing severe symptoms like chest pain, difficulty breathing, 
               severe bleeding, loss of consciousness, or other emergency situations, call emergency services immediately or go to the nearest emergency room.
             </AlertDescription>
           </Alert>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
