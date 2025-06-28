@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import type {
   Tables,
@@ -124,6 +125,42 @@ export const updateUserProfile = async (
   }
 
   return data;
+};
+
+// Medical Image Upload functions
+export const uploadMedicalImage = async (
+  userId: string,
+  file: File,
+  fileName: string
+): Promise<string> => {
+  const filePath = `${userId}/${fileName}`;
+  
+  const { data, error } = await supabase.storage
+    .from('medical-images')
+    .upload(filePath, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+
+  if (error) {
+    console.error('Error uploading medical image:', error);
+    throw error;
+  }
+
+  return data.path;
+};
+
+export const getMedicalImageUrl = async (
+  userId: string,
+  fileName: string
+): Promise<string> => {
+  const filePath = `${userId}/${fileName}`;
+  
+  const { data } = supabase.storage
+    .from('medical-images')
+    .getPublicUrl(filePath);
+
+  return data.publicUrl;
 };
 
 // New interfaces for the dynamic dashboard
