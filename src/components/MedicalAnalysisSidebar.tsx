@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
@@ -272,11 +271,6 @@ export function MedicalAnalysisSidebar() {
           <div className="text-xs text-muted-foreground">
             v2.0.1
           </div>
-        </div>
-        <div className="mt-2 text-center">
-          <p className="text-xs text-muted-foreground">
-            Powered by AI • Made with ❤️
-          </p>
         </div>
       </SidebarFooter>
     </Sidebar>
