@@ -9,6 +9,66 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          achievement_name: string
+          achievement_type: string
+          description: string | null
+          id: string
+          points_reward: number | null
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          achievement_name: string
+          achievement_type: string
+          description?: string | null
+          id?: string
+          points_reward?: number | null
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          achievement_name?: string
+          achievement_type?: string
+          description?: string | null
+          id?: string
+          points_reward?: number | null
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_claims: {
+        Row: {
+          bonus_multiplier: number | null
+          claim_date: string
+          claimed_at: string
+          id: string
+          points_claimed: number
+          streak_days: number
+          user_id: string
+        }
+        Insert: {
+          bonus_multiplier?: number | null
+          claim_date?: string
+          claimed_at?: string
+          id?: string
+          points_claimed?: number
+          streak_days?: number
+          user_id: string
+        }
+        Update: {
+          bonus_multiplier?: number | null
+          claim_date?: string
+          claimed_at?: string
+          id?: string
+          points_claimed?: number
+          streak_days?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       health_alerts: {
         Row: {
           category: string
@@ -96,6 +156,75 @@ export type Database = {
           full_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_activities: {
+        Row: {
+          activity_data: Json | null
+          activity_type: string
+          completed_at: string
+          created_at: string
+          id: string
+          points_earned: number | null
+          streak_count: number | null
+          user_id: string
+        }
+        Insert: {
+          activity_data?: Json | null
+          activity_type: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          points_earned?: number | null
+          streak_count?: number | null
+          user_id: string
+        }
+        Update: {
+          activity_data?: Json | null
+          activity_type?: string
+          completed_at?: string
+          created_at?: string
+          id?: string
+          points_earned?: number | null
+          streak_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_stats: {
+        Row: {
+          created_at: string
+          current_level: number
+          daily_streak: number
+          last_activity_at: string | null
+          longest_streak: number
+          total_analyses: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          current_level?: number
+          daily_streak?: number
+          last_activity_at?: string | null
+          longest_streak?: number
+          total_analyses?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          current_level?: number
+          daily_streak?: number
+          last_activity_at?: string | null
+          longest_streak?: number
+          total_analyses?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

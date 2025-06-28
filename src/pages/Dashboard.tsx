@@ -15,32 +15,73 @@ import {
   Calendar,
   Droplets,
   Moon,
-  Flame
+  Flame,
+  Users,
+  Zap,
+  Star
 } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 import HealthGamification from "@/components/HealthGamification";
+import DailyClaimCard from "@/components/DailyClaimCard";
+import ActivityFeed from "@/components/ActivityFeed";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { toast } from "sonner";
 
 const Dashboard = () => {
-  const [waterIntake, setWaterIntake] = useState(6);
-  const [meditationMinutes, setMeditationMinutes] = useState(15);
-  
+  const { 
+    userStats, 
+    isLoadingStats, 
+    logActivity, 
+    isRealTimeConnected 
+  } = useDashboardData();
+
+  const handleQuickAction = async (actionType: string, actionData: any = {}) => {
+    try {
+      const points = actionType === 'water_intake' ? 5 : actionType === 'meditation' ? 15 : 10;
+      
+      await logActivity({
+        user_id: '', // Will be set by the mutation
+        activity_type: actionType,
+        activity_data: actionData,
+        points_earned: points,
+        streak_count: 0
+      });
+
+      const actionNames = {
+        water_intake: '💧 Water logged',
+        meditation: '🧘 Meditation started',
+        exercise: '💪 Exercise logged',
+        symptom_check: '🩺 Symptoms checked'
+      };
+
+      toast.success(`${actionNames[actionType] || 'Activity logged'}! +${points} points`);
+    } catch (error) {
+      toast.error("Failed to log activity. Please try again.");
+    }
+  };
+
+  const currentLevel = userStats?.current_level || 1;
+  const totalPoints = userStats?.total_points || 0;
+  const pointsToNextLevel = 500 - (totalPoints % 500);
+  const levelProgress = ((totalPoints % 500) / 500) * 100;
+
   const healthMetrics = [
-    { title: "Vata Balance", value: 75, color: "bg-blue-500" },
-    { title: "Pitta Balance", value: 85, color: "bg-red-500" },
-    { title: "Kapha Balance", value: 70, color: "bg-green-500" },
-    { title: "Overall Wellness", value: 80, color: "bg-purple-500" }
+    { title: "Wellness Score", value: Math.min(95, 60 + (totalPoints / 50)), color: "bg-emerald-500" },
+    { title: "Activity Level", value: Math.min(90, 40 + (userStats?.total_analyses || 0) * 5), color: "bg-blue-500" },
+    { title: "Consistency", value: Math.min(100, (userStats?.daily_streak || 0) * 10), color: "bg-purple-500" },
+    { title: "Engagement", value: Math.min(85, 50 + (userStats?.total_analyses || 0) * 3), color: "bg-orange-500" }
   ];
 
   const recentActivities = [
-    { icon: Heart, activity: "Morning Yoga", time: "7:00 AM", status: "completed" },
-    { icon: Droplets, activity: "Ayurvedic Tea", time: "9:30 AM", status: "completed" },
-    { icon: Brain, activity: "Meditation", time: "6:00 PM", status: "pending" },
-    { icon: Moon, activity: "Evening Routine", time: "9:00 PM", status: "pending" }
+    { icon: Heart, activity: "Health Analysis", time: "2 hours ago", status: "completed" },
+    { icon: Droplets, activity: "Water Intake", time: "4 hours ago", status: "completed" },
+    { icon: Brain, activity: "Meditation", time: "6 hours ago", status: "completed" },
+    { icon: Moon, activity: "Sleep Tracking", time: "1 day ago", status: "pending" }
   ];
 
   return (
     <div className="flex-1 overflow-auto">
-      {/* Enhanced Header with theme toggle */}
+      {/* Enhanced Header with real-time indicator */}
       <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="flex h-16 items-center justify-between gap-4 px-6">
           <div className="flex items-center gap-4">
@@ -48,21 +89,28 @@ const Dashboard = () => {
             <div className="flex items-center space-x-3 animate-fade-in">
               <div className="relative">
                 <Activity className="h-7 w-7 text-primary" />
-                <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
+                {isRealTimeConnected && (
+                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full animate-pulse"></div>
+                )}
               </div>
               <div>
                 <h1 className="text-lg font-semibold text-foreground">
                   Health Dashboard
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Track your Ayurvedic wellness journey
+                  Level {currentLevel} • {totalPoints.toLocaleString()} points
                 </p>
               </div>
             </div>
           </div>
           
-          {/* Theme Toggle in Header */}
           <div className="flex items-center gap-4">
+            {isRealTimeConnected && (
+              <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></div>
+                Live
+              </Badge>
+            )}
             <ThemeToggle />
           </div>
         </div>
@@ -70,34 +118,92 @@ const Dashboard = () => {
 
       <main className="flex-1 overflow-auto">
         <div className="container mx-auto px-6 py-8 max-w-7xl">
-          {/* Welcome Section */}
+          {/* Welcome Section with Level Progress */}
           <div className="mb-8 animate-fade-in">
             <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent rounded-xl p-6 border border-primary/20">
-              <h2 className="text-2xl font-bold text-foreground mb-2">
-                Welcome back, Health Warrior! 🌟
-              </h2>
-              <p className="text-muted-foreground">
-                Continue your journey towards optimal wellness with personalized Ayurvedic guidance.
-              </p>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">
+                    Welcome back, Health Warrior! 🌟
+                  </h2>
+                  <p className="text-muted-foreground">
+                    Continue your journey towards optimal wellness with personalized guidance.
+                  </p>
+                </div>
+                
+                <div className="text-right min-w-[200px]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Star className="h-5 w-5 text-yellow-500" />
+                    <span className="text-xl font-bold">Level {currentLevel}</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground mb-2">
+                    {pointsToNextLevel} points to level {currentLevel + 1}
+                  </div>
+                  <Progress value={levelProgress} className="h-2 w-full" />
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Quick Stats Grid */}
+          {/* Quick Stats Grid - Enhanced with real data */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[
-              { title: "Daily Streak", value: "12 days", icon: Flame, color: "text-orange-500" },
-              { title: "Wellness Score", value: "85%", icon: Target, color: "text-green-500" },
-              { title: "Consultations", value: "3", icon: Heart, color: "text-red-500" },
-              { title: "Goals Achieved", value: "7/10", icon: Award, color: "text-purple-500" }
+              { 
+                title: "Daily Streak", 
+                value: `${userStats?.daily_streak || 0} days`, 
+                icon: Flame, 
+                color: "text-orange-500",
+                loading: isLoadingStats
+              },
+              { 
+                title: "Total Points", 
+                value: totalPoints.toLocaleString(), 
+                icon: Star, 
+                color: "text-yellow-500",
+                loading: isLoadingStats
+              },
+              { 
+                title: "Health Analyses", 
+                value: `${userStats?.total_analyses || 0}`, 
+                icon: Heart, 
+                color: "text-red-500",
+                loading: isLoadingStats
+              },
+              { 
+                title: "Current Level", 
+                value: `Level ${currentLevel}`, 
+                icon: Award, 
+                color: "text-purple-500",
+                loading: isLoadingStats
+              }
             ].map((stat, index) => (
               <Card key={stat.title} className="animate-scale-in border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift" style={{ animationDelay: `${index * 0.1}s` }}>
                 <CardContent className="p-6 text-center">
                   <stat.icon className={`h-8 w-8 ${stat.color} mx-auto mb-3`} />
-                  <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
-                  <div className="text-sm text-muted-foreground">{stat.title}</div>
+                  {stat.loading ? (
+                    <div className="space-y-2">
+                      <div className="h-8 bg-gray-200 rounded animate-pulse"></div>
+                      <div className="h-4 bg-gray-200 rounded animate-pulse"></div>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
+                      <div className="text-sm text-muted-foreground">{stat.title}</div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Daily Claim and Activity Feed */}
+          <div className="grid lg:grid-cols-3 gap-8 mb-8">
+            <div className="lg:col-span-1">
+              <DailyClaimCard />
+            </div>
+            <div className="lg:col-span-2">
+              <ActivityFeed />
+            </div>
           </div>
 
           {/* Health Metrics */}
@@ -106,16 +212,16 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <TrendingUp className="mr-2 h-5 w-5 text-primary" />
-                  Dosha Balance
+                  Health Metrics
                 </CardTitle>
-                <CardDescription>Your current Ayurvedic constitution balance</CardDescription>
+                <CardDescription>Your current wellness indicators</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 {healthMetrics.map((metric, index) => (
                   <div key={metric.title} className="space-y-2">
                     <div className="flex justify-between items-center">
                       <span className="text-sm font-medium">{metric.title}</span>
-                      <span className="text-sm text-muted-foreground">{metric.value}%</span>
+                      <span className="text-sm text-muted-foreground">{Math.round(metric.value)}%</span>
                     </div>
                     <Progress 
                       value={metric.value} 
@@ -130,7 +236,7 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Calendar className="mr-2 h-5 w-5 text-primary" />
-                  Today's Activities
+                  Today's Goals
                 </CardTitle>
                 <CardDescription>Your personalized wellness routine</CardDescription>
               </CardHeader>
@@ -156,34 +262,41 @@ const Dashboard = () => {
             </Card>
           </div>
 
-          {/* Gamification Section */}
+          {/* Enhanced Gamification Section */}
           <div className="mb-8 animate-fade-in" style={{ animationDelay: "0.2s" }}>
             <HealthGamification />
           </div>
 
-          {/* Quick Actions */}
-          <div className="grid md:grid-cols-3 gap-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
+          {/* Quick Actions with Real Functionality */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in" style={{ animationDelay: "0.3s" }}>
             {[
               { 
-                title: "Log Water Intake", 
+                title: "Log Water", 
                 description: "Track your daily hydration",
-                action: () => setWaterIntake(prev => prev + 1),
+                action: () => handleQuickAction('water_intake', { amount: 250, unit: 'ml' }),
                 icon: Droplets,
                 color: "from-blue-500 to-cyan-500"
               },
               { 
                 title: "Start Meditation", 
-                description: "Begin your mindfulness practice",
-                action: () => setMeditationMinutes(prev => prev + 5),
+                description: "Begin mindfulness practice",
+                action: () => handleQuickAction('meditation', { duration: 10 }),
                 icon: Brain,
                 color: "from-purple-500 to-pink-500"
               },
               { 
-                title: "Check Symptoms", 
-                description: "Analyze your current health",
-                action: () => {},
+                title: "Log Exercise", 
+                description: "Record your workout",
+                action: () => handleQuickAction('exercise', { type: 'general', duration: 30 }),
                 icon: Heart,
                 color: "from-red-500 to-orange-500"
+              },
+              { 
+                title: "Health Check", 
+                description: "Quick symptom assessment",
+                action: () => handleQuickAction('symptom_check', { type: 'quick_check' }),
+                icon: Users,
+                color: "from-green-500 to-emerald-500"
               }
             ].map((action, index) => (
               <Card key={action.title} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover-lift cursor-pointer group">
