@@ -35,7 +35,9 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <SignedOut>
-            <AuthPage />
+            <div className="min-h-screen bg-gradient-to-br from-background via-background/50 to-muted/30">
+              <AuthPage />
+            </div>
           </SignedOut>
           <SignedIn>
             <SidebarProvider>
@@ -44,7 +46,7 @@ const App = () => (
                 
                 <SidebarInset className="flex-1">
                   <Routes>
-                    <Route path="/" element={<Index />} />
+                    <Route path="/" element={<Dashboard />} />
                     <Route path="/analysis" element={<MedicalAnalysis />} />
                     <Route path="/products" element={<AyurvedicProducts />} />
                     <Route path="/recommendations" element={<HealthRecommendations />} />
