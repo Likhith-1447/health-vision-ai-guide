@@ -47,6 +47,7 @@ const Dashboard = () => {
       const points = actionType === 'water_intake' ? 5 : actionType === 'meditation' ? 15 : 10;
       
       await logActivity({
+        user_id: user.id,
         activity_type: actionType,
         activity_data: actionData,
         points_earned: points,
