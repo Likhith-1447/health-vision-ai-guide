@@ -26,8 +26,10 @@ import DailyClaimCard from "@/components/DailyClaimCard";
 import ActivityFeed from "@/components/ActivityFeed";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
+import { useUser } from '@clerk/clerk-react';
 
 const Dashboard = () => {
+  const { user } = useUser();
   const { 
     userStats, 
     isLoadingStats, 
@@ -36,11 +38,15 @@ const Dashboard = () => {
   } = useDashboardData();
 
   const handleQuickAction = async (actionType: string, actionData: any = {}) => {
+    if (!user?.id) {
+      toast.error("Please log in to perform this action");
+      return;
+    }
+
     try {
       const points = actionType === 'water_intake' ? 5 : actionType === 'meditation' ? 15 : 10;
       
       await logActivity({
-        user_id: '', // Will be set by the mutation
         activity_type: actionType,
         activity_data: actionData,
         points_earned: points,
@@ -56,6 +62,7 @@ const Dashboard = () => {
 
       toast.success(`${actionNames[actionType] || 'Activity logged'}! +${points} points`);
     } catch (error) {
+      console.error('Error logging activity:', error);
       toast.error("Failed to log activity. Please try again.");
     }
   };
@@ -79,6 +86,17 @@ const Dashboard = () => {
     { icon: Moon, activity: "Sleep Tracking", time: "1 day ago", status: "pending" }
   ];
 
+  if (!user) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Please sign in to access your dashboard</h2>
+          <p className="text-muted-foreground">Your health journey awaits!</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex-1 overflow-auto">
       {/* Enhanced Header with real-time indicator */}
@@ -98,7 +116,7 @@ const Dashboard = () => {
                   Health Dashboard
                 </h1>
                 <p className="text-sm text-muted-foreground">
-                  Level {currentLevel} • {totalPoints.toLocaleString()} points
+                  Welcome, {user.firstName || user.fullName || 'Health Warrior'}! Level {currentLevel} • {totalPoints.toLocaleString()} points
                 </p>
               </div>
             </div>
@@ -124,7 +142,7 @@ const Dashboard = () => {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-2xl font-bold text-foreground mb-2">
-                    Welcome back, Health Warrior! 🌟
+                    Welcome back, {user.firstName || 'Health Warrior'}! 🌟
                   </h2>
                   <p className="text-muted-foreground">
                     Continue your journey towards optimal wellness with personalized guidance.
@@ -145,7 +163,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Quick Stats Grid - Enhanced with real data */}
+          {/* Quick Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {[
               { 

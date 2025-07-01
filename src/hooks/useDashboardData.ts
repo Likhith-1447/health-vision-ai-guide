@@ -87,7 +87,7 @@ export const useDashboardData = () => {
   // Log Activity Mutation
   const logActivityMutation = useMutation({
     mutationFn: (activity: Omit<UserActivity, 'id' | 'created_at' | 'completed_at'>) => 
-      logActivity(activity),
+      logActivity({ ...activity, user_id: user!.id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-activities', user?.id] });
       queryClient.invalidateQueries({ queryKey: ['user-stats', user?.id] });
@@ -97,7 +97,7 @@ export const useDashboardData = () => {
   // Unlock Achievement Mutation
   const unlockAchievementMutation = useMutation({
     mutationFn: (achievement: Omit<Achievement, 'id' | 'unlocked_at'>) => 
-      unlockAchievement(achievement),
+      unlockAchievement({ ...achievement, user_id: user!.id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['user-achievements', user?.id] });
     },
