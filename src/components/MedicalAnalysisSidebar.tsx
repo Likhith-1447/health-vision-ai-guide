@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
+import UserMenu from './UserMenu';
 
 const mainMenuItems = [
   { 
@@ -111,6 +112,12 @@ const secondaryMenuItems = [
 ];
 
 const utilityMenuItems = [
+  { 
+    title: 'User Profile', 
+    url: '/profile', 
+    icon: User,
+    gradient: 'from-indigo-500 to-purple-500'
+  },
   { 
     title: 'Health Alerts', 
     url: '/alerts', 
@@ -262,8 +269,9 @@ export function MedicalAnalysisSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-border/50 p-4 bg-gradient-to-r from-muted/10 to-muted/5">
-        <div className="flex items-center justify-between">
+      <SidebarFooter className="border-t border-border/50 p-2 bg-gradient-to-r from-muted/10 to-muted/5 space-y-4">
+        <UserMenu />
+        <div className="flex items-center justify-between px-2">
           <div className="flex items-center space-x-2">
             <LanguageSelector />
             <ThemeToggle />

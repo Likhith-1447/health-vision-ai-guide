@@ -21,7 +21,7 @@ import {
   Star,
   Lock
 } from "lucide-react";
-import ThemeToggle from "@/components/ThemeToggle";
+import Navbar from "@/components/Navbar";
 import HealthGamification from "@/components/HealthGamification";
 import DailyClaimCard from "@/components/DailyClaimCard";
 import ActivityFeed from "@/components/ActivityFeed";
@@ -121,40 +121,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex-1 overflow-auto">
-      {/* Enhanced Header with real-time indicator */}
-      <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-16 items-center justify-between gap-4 px-6">
-          <div className="flex items-center gap-4">
-            <SidebarTrigger className="-ml-1 transform hover:scale-110 transition-transform duration-200" />
-            <div className="flex items-center space-x-3 animate-slide-in-right">
-              <div className="relative">
-                <Activity className="h-7 w-7 text-primary animate-pulse" />
-                {isRealTimeConnected && (
-                  <div className="absolute -top-1 -right-1 h-3 w-3 bg-green-500 rounded-full animate-ping"></div>
-                )}
-              </div>
-              <div>
-                <h1 className="text-lg font-semibold text-foreground">
-                  Health Dashboard
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Welcome, {user.firstName || user.fullName || 'Health Warrior'}! Level {currentLevel} • {totalPoints.toLocaleString()} points
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            {isRealTimeConnected && (
-              <Badge variant="outline" className="text-green-700 border-green-200 bg-green-50 animate-pulse">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-ping"></div>
-                Live
-              </Badge>
-            )}
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
+      <Navbar isRealTimeConnected={isRealTimeConnected} />
 
       <main className="flex-1 overflow-auto">
         <div className="container mx-auto px-6 py-8 max-w-7xl">

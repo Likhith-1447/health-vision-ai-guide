@@ -24,6 +24,7 @@ import Consultation from "./pages/Consultation";
 import Dashboard from "./pages/Dashboard";
 import SubscriptionPlans from "./pages/SubscriptionPlans";
 import AdminAnalytics from "./pages/AdminAnalytics";
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -58,6 +59,7 @@ const App = () => (
                     <Route path="/prakriti-test" element={<PrakritiTest />} />
                     <Route path="/consultation" element={<Consultation />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/profile" element={<Profile />} />
                     <Route path="/subscriptions" element={<SubscriptionPlans />} />
                     <Route path="/admin/analytics" element={<AdminAnalytics />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
