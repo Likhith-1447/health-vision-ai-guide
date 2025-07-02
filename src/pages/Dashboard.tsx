@@ -52,7 +52,10 @@ const Dashboard = () => {
     }
 
     try {
-      const points = actionType === 'water_intake' ? 5 : actionType === 'meditation' ? 15 : 10;
+      const points = actionType === 'water_intake' ? 5 : 
+                   actionType === 'meditation' ? 15 : 
+                   actionType === 'exercise' ? 10 :
+                   actionType === 'daily_checkin' ? 20 : 10;
       
       await logActivity({
         user_id: user.id,
@@ -63,13 +66,22 @@ const Dashboard = () => {
       });
 
       const actionNames = {
-        water_intake: '💧 Water logged',
-        meditation: '🧘 Meditation started',
+        water_intake: '💧 Water logged successfully',
+        meditation: '🧘 Meditation session started',
         exercise: '💪 Exercise logged',
-        symptom_check: '🩺 Symptoms checked'
+        daily_checkin: '✅ Daily check-in completed'
       };
 
-      toast.success(`${actionNames[actionType] || 'Activity logged'}! +${points} points`);
+      const actionDescriptions = {
+        water_intake: `${actionData.amount || 250}ml added to your hydration goal`,
+        meditation: `${actionData.duration || 10} minute session recorded`,
+        exercise: `${actionData.duration || 30} minute ${actionData.type || 'workout'} logged`,
+        daily_checkin: 'Your daily wellness check is complete'
+      };
+
+      toast.success(`${actionNames[actionType] || 'Activity logged'}! +${points} points`, {
+        description: actionDescriptions[actionType]
+      });
     } catch (error) {
       console.error('Error logging activity:', error);
       toast.error("Failed to log activity. Please try again.");
@@ -283,36 +295,40 @@ const Dashboard = () => {
             <HealthGamification />
           </div>
 
-          {/* Quick Actions with Real Functionality */}
+          {/* Enhanced Quick Actions with Complete Functionality */}
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 animate-slide-up" style={{ animationDelay: "0.3s" }}>
             {[
               { 
                 title: "Log Water", 
                 description: "Track your daily hydration",
-                action: () => handleQuickAction('water_intake', { amount: 250, unit: 'ml' }),
+                action: () => handleQuickAction('water_intake', { amount: 250, unit: 'ml', timestamp: new Date().toISOString() }),
                 icon: Droplets,
-                color: "from-blue-500 to-cyan-500"
+                color: "from-blue-500 to-cyan-500",
+                points: 5
               },
               { 
                 title: "Start Meditation", 
                 description: "Begin mindfulness practice",
-                action: () => handleQuickAction('meditation', { duration: 10 }),
+                action: () => handleQuickAction('meditation', { duration: 10, type: 'mindfulness', timestamp: new Date().toISOString() }),
                 icon: Brain,
-                color: "from-purple-500 to-pink-500"
+                color: "from-purple-500 to-pink-500",
+                points: 15
               },
               { 
                 title: "Log Exercise", 
                 description: "Record your workout",
-                action: () => handleQuickAction('exercise', { type: 'general', duration: 30 }),
+                action: () => handleQuickAction('exercise', { type: 'general', duration: 30, intensity: 'moderate', timestamp: new Date().toISOString() }),
                 icon: Heart,
-                color: "from-red-500 to-orange-500"
+                color: "from-red-500 to-orange-500",
+                points: 10
               },
               { 
-                title: "Health Check", 
-                description: "Quick symptom assessment",
-                action: () => handleQuickAction('symptom_check', { type: 'quick_check' }),
+                title: "Daily Check-in", 
+                description: "Complete wellness assessment",
+                action: () => handleQuickAction('daily_checkin', { mood: 'good', energy: 7, sleep_quality: 'good', timestamp: new Date().toISOString() }),
                 icon: Users,
-                color: "from-green-500 to-emerald-500"
+                color: "from-green-500 to-emerald-500",
+                points: 20
               }
             ].map((action, index) => (
               <Card key={action.title} className="border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover-lift cursor-pointer group overflow-hidden relative animate-bounce-in" style={{ animationDelay: `${index * 0.1}s` }}>
@@ -322,13 +338,18 @@ const Dashboard = () => {
                     <action.icon className="h-6 w-6 text-white" />
                   </div>
                   <h3 className="font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-300">{action.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-4 group-hover:text-primary/70 transition-colors duration-300">{action.description}</p>
+                  <p className="text-sm text-muted-foreground mb-2 group-hover:text-primary/70 transition-colors duration-300">{action.description}</p>
+                  <div className="flex items-center justify-center gap-1 mb-4">
+                    <Star className="h-3 w-3 text-yellow-500" />
+                    <span className="text-xs font-medium text-yellow-600">+{action.points} points</span>
+                  </div>
                   <Button 
                     onClick={action.action}
                     className="w-full transform hover:scale-110 transition-all duration-300 hover:shadow-lg bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
                     variant="outline"
                   >
-                    Start Now
+                    <Zap className="h-4 w-4 mr-2" />
+                    Complete Now
                   </Button>
                 </CardContent>
               </Card>
