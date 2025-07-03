@@ -256,11 +256,41 @@ export const getTodaysClaim = async (userId: string): Promise<DailyClaim | null>
   return data;
 };
 
+export const getLastClaim = async (userId: string): Promise<DailyClaim | null> => {
+  const { data, error } = await supabase
+    .from('daily_claims')
+    .select('*')
+    .eq('user_id', userId)
+    .order('claim_date', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching last claim:', error);
+    return null;
+  }
+
+  return data;
+};
+
 export const claimDailyReward = async (userId: string): Promise<DailyClaim> => {
-  // Get user's current streak
+  // Get user's current streak and last claim
   const stats = await getUserStats(userId);
-  const currentStreak = stats?.daily_streak || 0;
-  const newStreak = currentStreak + 1;
+  const lastClaim = await getLastClaim(userId);
+  
+  // Check if streak should continue or reset
+  let newStreak = 1;
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  
+  if (lastClaim && lastClaim.claim_date === yesterdayStr) {
+    // Continuing streak from yesterday
+    newStreak = (stats?.daily_streak || 0) + 1;
+  } else if (stats?.daily_streak && stats.daily_streak > 0) {
+    // Streak was broken, reset to 1
+    newStreak = 1;
+  }
   
   // Calculate bonus based on streak
   const basePoints = 50;
@@ -290,6 +320,7 @@ export const claimDailyReward = async (userId: string): Promise<DailyClaim> => {
       daily_streak: newStreak,
       longest_streak: Math.max(stats?.longest_streak || 0, newStreak),
       total_points: (stats?.total_points || 0) + pointsToAward,
+      last_activity_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     })
     .eq('user_id', userId);
