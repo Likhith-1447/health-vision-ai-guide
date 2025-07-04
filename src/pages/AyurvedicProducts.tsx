@@ -1,182 +1,43 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Leaf, Heart, Sparkles, Award, Shield, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@clerk/clerk-react";
 import ProductHeader from "@/components/ProductHeader";
 import ProductFilters from "@/components/ProductFilters";
 import ProductCard from "@/components/ProductCard";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviews: number;
-  category: string;
-  benefits: string[];
-  image: string;
-  inStock: boolean;
-}
+import { getProducts, addToCart, type Product } from "@/lib/product-database";
 
 const AyurvedicProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [cart, setCart] = useState<number[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useUser();
 
-  const products: Product[] = [
-    {
-      id: 1,
-      name: "Ashwagandha Premium Capsules",
-      description: "Pure Ashwagandha root extract for stress relief and enhanced vitality",
-      price: 899,
-      originalPrice: 1299,
-      rating: 4.8,
-      reviews: 2847,
-      category: "herbs",
-      benefits: ["Stress Relief", "Energy Boost", "Immunity Support"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 2,
-      name: "Triphala Churna Organic",
-      description: "Traditional blend of three fruits for optimal digestive wellness",
-      price: 399,
-      rating: 4.6,
-      reviews: 1523,
-      category: "digestive",
-      benefits: ["Digestive Health", "Natural Detox", "Weight Management"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 3,
-      name: "Brahmi Memory Booster",
-      description: "Enhance cognitive function and mental clarity naturally",
-      price: 749,
-      originalPrice: 999,
-      rating: 4.7,
-      reviews: 981,
-      category: "brain",
-      benefits: ["Memory Enhancement", "Focus", "Mental Clarity"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 4,
-      name: "Turmeric Curcumin Complex",
-      description: "High potency turmeric with black pepper for maximum absorption",
-      price: 649,
-      rating: 4.9,
-      reviews: 3247,
-      category: "inflammation",
-      benefits: ["Anti-inflammatory", "Joint Health", "Immunity"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 5,
-      name: "Arjuna Heart Care Tablets",
-      description: "Traditional heart tonic for cardiovascular wellness and strength",
-      price: 549,
-      rating: 4.5,
-      reviews: 756,
-      category: "heart",
-      benefits: ["Heart Health", "Blood Pressure", "Circulation"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 6,
-      name: "Neem Blood Purifier",
-      description: "Natural blood purifier and comprehensive skin health supplement",
-      price: 429,
-      rating: 4.4,
-      reviews: 1247,
-      category: "skin",
-      benefits: ["Blood Purification", "Skin Health", "Natural Detox"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 7,
-      name: "Giloy Immunity Booster",
-      description: "Powerful immune system support with premium Guduchi extract",
-      price: 599,
-      originalPrice: 799,
-      rating: 4.6,
-      reviews: 1834,
-      category: "immunity",
-      benefits: ["Immunity", "Fever Relief", "Antioxidant Power"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 8,
-      name: "Amla Vitamin C Natural",
-      description: "Rich source of natural Vitamin C for comprehensive health",
-      price: 379,
-      rating: 4.5,
-      reviews: 2156,
-      category: "immunity",
-      benefits: ["Vitamin C", "Hair Health", "Radiant Skin"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 9,
-      name: "Moringa Superfood Powder",
-      description: "Nutrient-dense superfood for sustained energy and vitality",
-      price: 699,
-      rating: 4.7,
-      reviews: 892,
-      category: "superfood",
-      benefits: ["Natural Energy", "Complete Nutrition", "Plant Protein"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 10,
-      name: "Tulsi Holy Basil Extract",
-      description: "Sacred herb for respiratory health and natural stress relief",
-      price: 449,
-      originalPrice: 599,
-      rating: 4.8,
-      reviews: 1567,
-      category: "respiratory",
-      benefits: ["Respiratory Health", "Stress Relief", "Immunity"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 11,
-      name: "Spirulina Blue Green Algae",
-      description: "Pure spirulina for comprehensive detox and energy enhancement",
-      price: 899,
-      rating: 4.6,
-      reviews: 743,
-      category: "superfood",
-      benefits: ["Natural Detox", "Energy Boost", "Complete Protein"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: true
-    },
-    {
-      id: 12,
-      name: "Shatavari Women's Health",
-      description: "Traditional herb for women's reproductive health and wellness",
-      price: 649,
-      rating: 4.7,
-      reviews: 1298,
-      category: "women",
-      benefits: ["Hormonal Balance", "Women's Health", "Natural Vitality"],
-      image: "photo-1556909559-f3a6d1dec6e6",
-      inStock: false
+  useEffect(() => {
+    loadProducts();
+  }, [selectedCategory]);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      const fetchedProducts = await getProducts(selectedCategory);
+      setProducts(fetchedProducts);
+    } catch (error) {
+      console.error("Error loading products:", error);
+      toast({
+        title: "Error",
+        description: "Failed to load products",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const categories = [
     { id: "all", name: "All Products" },
@@ -195,22 +56,39 @@ const AyurvedicProducts = () => {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    return matchesSearch;
   });
 
-  const addToCart = (productId: number) => {
-    setCart([...cart, productId]);
-    const product = products.find(p => p.id === productId);
-    toast({
-      title: "✨ Added to Cart",
-      description: `${product?.name} has been added to your cart.`,
-    });
+  const handleAddToCart = async (productId: string) => {
+    if (!user) {
+      toast({
+        title: "Please Sign In",
+        description: "You need to be signed in to add items to cart",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await addToCart(user.id, productId);
+      setCartCount(prev => prev + 1);
+      const product = products.find(p => p.id === productId);
+      toast({
+        title: "✨ Added to Cart",
+        description: `${product?.name} has been added to your cart.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-accent/5">
-      <ProductHeader cartCount={cart.length} />
+      <ProductHeader cartCount={cartCount} />
 
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         {/* Enhanced Filters */}
@@ -231,7 +109,7 @@ const AyurvedicProducts = () => {
               <ProductCard
                 key={product.id}
                 product={product}
-                onAddToCart={addToCart}
+                onAddToCart={handleAddToCart}
                 animationDelay={index * 0.1}
               />
             ))}

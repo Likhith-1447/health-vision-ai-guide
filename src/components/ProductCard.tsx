@@ -3,24 +3,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, Star, Heart, Eye, Sparkles } from "lucide-react";
-
-interface Product {
-  id: number;
-  name: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  rating: number;
-  reviews: number;
-  category: string;
-  benefits: string[];
-  image: string;
-  inStock: boolean;
-}
+import { type Product } from "@/lib/product-database";
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (productId: number) => void;
+  onAddToCart: (productId: string) => void;
   animationDelay?: number;
 }
 
@@ -41,14 +28,14 @@ const ProductCard = ({ product, onAddToCart, animationDelay = 0 }: ProductCardPr
     ));
   };
 
-  const discountPercentage = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+  const discountPercentage = product.original_price 
+    ? Math.round(((Number(product.original_price) - Number(product.price)) / Number(product.original_price)) * 100)
     : 0;
 
   return (
     <Card 
       className={`group relative overflow-hidden card-interactive hover-lift bg-gradient-to-br from-card via-card to-secondary/20 border-0 shadow-lg hover:shadow-2xl transition-all duration-700 animate-scale-in ${
-        !product.inStock ? 'opacity-75' : ''
+        !product.in_stock ? 'opacity-75' : ''
       }`}
       style={{ animationDelay: `${animationDelay}s` }}
       onMouseEnter={() => setIsHovered(true)}
@@ -70,8 +57,8 @@ const ProductCard = ({ product, onAddToCart, animationDelay = 0 }: ProductCardPr
         </div>
         
         <img
-          src={`https://images.unsplash.com/photo-1556909559-f3a6d1dec6e6?w=400&h=300&fit=crop&auto=format`}
-          alt={product.name}
+          src={product.image_url || `https://images.unsplash.com/photo-1556909559-f3a6d1dec6e6?w=400&h=300&fit=crop&auto=format`}
+          alt={product.image_alt || product.name}
           className={`absolute inset-0 w-full h-64 object-cover transition-all duration-700 group-hover:scale-110 ${
             isImageLoaded ? 'opacity-100' : 'opacity-0'
           }`}
@@ -88,7 +75,7 @@ const ProductCard = ({ product, onAddToCart, animationDelay = 0 }: ProductCardPr
               {discountPercentage}% OFF
             </Badge>
           )}
-          {!product.inStock && (
+          {!product.in_stock && (
             <Badge variant="secondary" className="bg-muted text-muted-foreground">
               Out of Stock
             </Badge>
@@ -124,13 +111,13 @@ const ProductCard = ({ product, onAddToCart, animationDelay = 0 }: ProductCardPr
             {renderStars(product.rating)}
           </div>
           <span className="text-sm font-medium text-muted-foreground">
-            {product.rating} ({product.reviews})
+            {product.rating} ({product.reviews_count})
           </span>
         </div>
 
         {/* Benefits */}
         <div className="flex flex-wrap gap-1">
-          {product.benefits.slice(0, 3).map((benefit, index) => (
+          {product.benefits?.slice(0, 3).map((benefit, index) => (
             <Badge 
               key={index} 
               variant="outline" 
@@ -145,11 +132,11 @@ const ProductCard = ({ product, onAddToCart, animationDelay = 0 }: ProductCardPr
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <span className="text-2xl font-bold text-primary">
-              ₹{product.price.toLocaleString()}
+              ₹{Number(product.price).toLocaleString()}
             </span>
-            {product.originalPrice && (
+            {product.original_price && (
               <span className="text-sm text-muted-foreground line-through">
-                ₹{product.originalPrice.toLocaleString()}
+                ₹{Number(product.original_price).toLocaleString()}
               </span>
             )}
           </div>
@@ -158,15 +145,15 @@ const ProductCard = ({ product, onAddToCart, animationDelay = 0 }: ProductCardPr
         {/* Add to Cart Button */}
         <Button
           onClick={() => onAddToCart(product.id)}
-          disabled={!product.inStock}
+          disabled={!product.in_stock}
           className={`w-full h-12 font-semibold transition-all duration-500 transform ${
-            product.inStock 
+            product.in_stock 
               ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105' 
               : 'bg-muted text-muted-foreground cursor-not-allowed'
           }`}
         >
           <ShoppingCart className="mr-2 h-5 w-5" />
-          {product.inStock ? "Add to Cart" : "Out of Stock"}
+          {product.in_stock ? "Add to Cart" : "Out of Stock"}
         </Button>
       </CardContent>
     </Card>

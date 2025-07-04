@@ -12,6 +12,9 @@ import AuthPage from "@/components/AuthPage";
 import Index from "./pages/Index";
 import MedicalAnalysis from "./pages/MedicalAnalysis";
 import AyurvedicProducts from "./pages/AyurvedicProducts";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
 import HealthRecommendations from "./pages/HealthRecommendations";
 import SymptomChecker from "./pages/SymptomChecker";
 import NutritionAdvisor from "./pages/NutritionAdvisor";
@@ -49,7 +52,10 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/analysis" element={<MedicalAnalysis />} />
-                    <Route path="/products" element={<AyurvedicProducts />} />
+          <Route path="/products" element={<AyurvedicProducts />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
                     <Route path="/recommendations" element={<HealthRecommendations />} />
                     <Route path="/symptom-checker" element={<SymptomChecker />} />
                     <Route path="/nutrition" element={<NutritionAdvisor />} />
