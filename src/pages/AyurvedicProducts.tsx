@@ -1,12 +1,11 @@
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, Search, Star, Leaf, Heart, Sparkles } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Card, CardContent } from "@/components/ui/card";
+import { Leaf, Heart, Sparkles, Award, Shield, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import ProductHeader from "@/components/ProductHeader";
+import ProductFilters from "@/components/ProductFilters";
+import ProductCard from "@/components/ProductCard";
 
 interface Product {
   id: number;
@@ -32,26 +31,26 @@ const AyurvedicProducts = () => {
     {
       id: 1,
       name: "Ashwagandha Premium Capsules",
-      description: "Pure Ashwagandha root extract for stress relief and vitality",
+      description: "Pure Ashwagandha root extract for stress relief and enhanced vitality",
       price: 899,
       originalPrice: 1299,
       rating: 4.8,
       reviews: 2847,
       category: "herbs",
-      benefits: ["Stress Relief", "Energy Boost", "Immunity"],
-      image: "/placeholder.svg",
+      benefits: ["Stress Relief", "Energy Boost", "Immunity Support"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 2,
       name: "Triphala Churna Organic",
-      description: "Traditional blend of three fruits for digestive health",
+      description: "Traditional blend of three fruits for optimal digestive wellness",
       price: 399,
       rating: 4.6,
       reviews: 1523,
       category: "digestive",
-      benefits: ["Digestive Health", "Detox", "Weight Management"],
-      image: "/placeholder.svg",
+      benefits: ["Digestive Health", "Natural Detox", "Weight Management"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
@@ -64,7 +63,7 @@ const AyurvedicProducts = () => {
       reviews: 981,
       category: "brain",
       benefits: ["Memory Enhancement", "Focus", "Mental Clarity"],
-      image: "/placeholder.svg",
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
@@ -76,106 +75,106 @@ const AyurvedicProducts = () => {
       reviews: 3247,
       category: "inflammation",
       benefits: ["Anti-inflammatory", "Joint Health", "Immunity"],
-      image: "/placeholder.svg",
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 5,
       name: "Arjuna Heart Care Tablets",
-      description: "Traditional heart tonic for cardiovascular wellness",
+      description: "Traditional heart tonic for cardiovascular wellness and strength",
       price: 549,
       rating: 4.5,
       reviews: 756,
       category: "heart",
       benefits: ["Heart Health", "Blood Pressure", "Circulation"],
-      image: "/placeholder.svg",
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 6,
       name: "Neem Blood Purifier",
-      description: "Natural blood purifier and skin health supplement",
+      description: "Natural blood purifier and comprehensive skin health supplement",
       price: 429,
       rating: 4.4,
       reviews: 1247,
       category: "skin",
-      benefits: ["Blood Purification", "Skin Health", "Detox"],
-      image: "/placeholder.svg",
+      benefits: ["Blood Purification", "Skin Health", "Natural Detox"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 7,
       name: "Giloy Immunity Booster",
-      description: "Powerful immune system support with Guduchi extract",
+      description: "Powerful immune system support with premium Guduchi extract",
       price: 599,
       originalPrice: 799,
       rating: 4.6,
       reviews: 1834,
       category: "immunity",
-      benefits: ["Immunity", "Fever Relief", "Antioxidant"],
-      image: "/placeholder.svg",
+      benefits: ["Immunity", "Fever Relief", "Antioxidant Power"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 8,
       name: "Amla Vitamin C Natural",
-      description: "Rich source of natural Vitamin C for overall health",
+      description: "Rich source of natural Vitamin C for comprehensive health",
       price: 379,
       rating: 4.5,
       reviews: 2156,
       category: "immunity",
-      benefits: ["Vitamin C", "Hair Health", "Skin Glow"],
-      image: "/placeholder.svg",
+      benefits: ["Vitamin C", "Hair Health", "Radiant Skin"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 9,
       name: "Moringa Superfood Powder",
-      description: "Nutrient-dense superfood for energy and vitality",
+      description: "Nutrient-dense superfood for sustained energy and vitality",
       price: 699,
       rating: 4.7,
       reviews: 892,
       category: "superfood",
-      benefits: ["Energy", "Nutrition", "Protein"],
-      image: "/placeholder.svg",
+      benefits: ["Natural Energy", "Complete Nutrition", "Plant Protein"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 10,
       name: "Tulsi Holy Basil Extract",
-      description: "Sacred herb for respiratory health and stress relief",
+      description: "Sacred herb for respiratory health and natural stress relief",
       price: 449,
       originalPrice: 599,
       rating: 4.8,
       reviews: 1567,
       category: "respiratory",
       benefits: ["Respiratory Health", "Stress Relief", "Immunity"],
-      image: "/placeholder.svg",
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 11,
       name: "Spirulina Blue Green Algae",
-      description: "Pure spirulina for detox and energy enhancement",
+      description: "Pure spirulina for comprehensive detox and energy enhancement",
       price: 899,
       rating: 4.6,
       reviews: 743,
       category: "superfood",
-      benefits: ["Detox", "Energy", "Protein"],
-      image: "/placeholder.svg",
+      benefits: ["Natural Detox", "Energy Boost", "Complete Protein"],
+      image: "photo-1556909559-f3a6d1dec6e6",
       inStock: true
     },
     {
       id: 12,
       name: "Shatavari Women's Health",
-      description: "Traditional herb for women's reproductive health",
+      description: "Traditional herb for women's reproductive health and wellness",
       price: 649,
       rating: 4.7,
       reviews: 1298,
       category: "women",
-      benefits: ["Hormonal Balance", "Women's Health", "Vitality"],
-      image: "/placeholder.svg",
-      inStock: true
+      benefits: ["Hormonal Balance", "Women's Health", "Natural Vitality"],
+      image: "photo-1556909559-f3a6d1dec6e6",
+      inStock: false
     }
   ];
 
@@ -204,201 +203,124 @@ const AyurvedicProducts = () => {
     setCart([...cart, productId]);
     const product = products.find(p => p.id === productId);
     toast({
-      title: "Added to Cart",
+      title: "✨ Added to Cart",
       description: `${product?.name} has been added to your cart.`,
     });
   };
 
-  const renderStars = (rating: number) => {
-    return Array.from({ length: 5 }, (_, i) => (
-      <Star
-        key={i}
-        className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
-      />
-    ));
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-white">
-      {/* Navigation */}
-      <nav className="border-b bg-white/90 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <Link to="/" className="flex items-center space-x-3 animate-fade-in">
-              <div className="relative">
-                <Leaf className="h-6 w-6 text-emerald-600" />
-                <Sparkles className="absolute -top-1 -right-1 h-3 w-3 text-green-500 animate-pulse" />
-              </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
-                AyurGen Store
-              </span>
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Button variant="outline" size="sm" className="hover:scale-105 transition-transform">
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                Cart ({cart.length})
-              </Button>
-            </div>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/10 to-accent/5">
+      <ProductHeader cartCount={cart.length} />
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8 animate-fade-in">
-          <div className="relative">
-            <h1 className="text-4xl font-bold text-gray-800 mb-4 bg-gradient-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent">
-              Authentic Ayurvedic Products
-            </h1>
-            <div className="absolute -top-2 -right-8">
-              <Heart className="h-6 w-6 text-red-500 animate-pulse" />
-            </div>
-          </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover traditional Ayurvedic medicines and wellness products sourced from trusted manufacturers
-          </p>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="flex flex-col md:flex-row gap-4 mb-8 animate-scale-in">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-            <Input
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 border-2 border-emerald-200 focus:border-emerald-400"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {categories.map((category) => (
-              <Button
-                key={category.id}
-                variant={selectedCategory === category.id ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category.id)}
-                className={`transition-all duration-300 hover:scale-105 ${
-                  selectedCategory === category.id 
-                    ? "bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700" 
-                    : "hover:border-emerald-400"
-                }`}
-              >
-                {category.name}
-              </Button>
-            ))}
-          </div>
+      <div className="container mx-auto px-4 py-12 max-w-7xl">
+        {/* Enhanced Filters */}
+        <div className="mb-12">
+          <ProductFilters
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            categories={categories}
+          />
         </div>
 
         {/* Products Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {filteredProducts.map((product, index) => (
-            <Card 
-              key={product.id} 
-              className="overflow-hidden hover:shadow-xl transition-all duration-500 border-0 shadow-lg bg-gradient-to-br from-white to-emerald-50 hover:scale-105 animate-scale-in"
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              <div className="relative">
-                <img
-                  src={product.image}
-                  alt={product.name}
-                  className="w-full h-48 object-cover"
-                />
-                {product.originalPrice && (
-                  <Badge className="absolute top-2 left-2 bg-gradient-to-r from-red-500 to-pink-500 animate-pulse">
-                    {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
-                  </Badge>
-                )}
-                {!product.inStock && (
-                  <div className="absolute inset-0 bg-gray-900/50 flex items-center justify-center">
-                    <Badge variant="secondary">Out of Stock</Badge>
-                  </div>
-                )}
-              </div>
-              
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg line-clamp-2 text-gray-800">{product.name}</CardTitle>
-                <CardDescription className="line-clamp-2 text-gray-600">
-                  {product.description}
-                </CardDescription>
-              </CardHeader>
-              
-              <CardContent className="space-y-3">
-                {/* Rating */}
-                <div className="flex items-center space-x-2">
-                  <div className="flex">{renderStars(product.rating)}</div>
-                  <span className="text-sm text-gray-600">
-                    {product.rating} ({product.reviews} reviews)
-                  </span>
-                </div>
-
-                {/* Benefits */}
-                <div className="flex flex-wrap gap-1">
-                  {product.benefits.slice(0, 3).map((benefit, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs bg-emerald-100 text-emerald-700">
-                      {benefit}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Price */}
-                <div className="flex items-center justify-between">
-                  <div className="space-x-2">
-                    <span className="text-2xl font-bold text-emerald-600">
-                      ₹{product.price}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-sm text-gray-500 line-through">
-                        ₹{product.originalPrice}
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Add to Cart Button */}
-                <Button
-                  onClick={() => addToCart(product.id)}
-                  disabled={!product.inStock}
-                  className="w-full bg-gradient-to-r from-emerald-600 to-green-600 hover:from-emerald-700 hover:to-green-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
-                >
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  {product.inStock ? "Add to Cart" : "Out of Stock"}
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-12 animate-fade-in">
-            <Leaf className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-            <p className="text-gray-500">Try adjusting your search or filter criteria</p>
+        {filteredProducts.length > 0 ? (
+          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+            {filteredProducts.map((product, index) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={addToCart}
+                animationDelay={index * 0.1}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-20 animate-fade-in">
+            <div className="relative mb-8">
+              <Leaf className="mx-auto h-24 w-24 text-muted-foreground/40" />
+              <Sparkles className="absolute top-0 right-1/2 transform translate-x-6 h-6 w-6 text-primary animate-pulse" />
+            </div>
+            <h3 className="text-2xl font-bold text-card-foreground mb-4">No products found</h3>
+            <p className="text-muted-foreground text-lg max-w-md mx-auto">
+              Try adjusting your search terms or browse our categories to discover amazing products
+            </p>
           </div>
         )}
 
-        {/* Features Section */}
-        <div className="mt-16 grid md:grid-cols-3 gap-6">
-          <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-emerald-50 to-green-50 animate-scale-in">
-            <CardContent className="p-6 text-center">
-              <Leaf className="mx-auto h-12 w-12 text-emerald-600 mb-4" />
-              <h3 className="font-semibold text-gray-800 mb-2">100% Natural</h3>
-              <p className="text-sm text-gray-600">Pure Ayurvedic products with no artificial additives</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-blue-50 to-cyan-50 animate-scale-in">
-            <CardContent className="p-6 text-center">
-              <Heart className="mx-auto h-12 w-12 text-blue-600 mb-4" />
-              <h3 className="font-semibold text-gray-800 mb-2">Trusted Quality</h3>
-              <p className="text-sm text-gray-600">Products from certified and reputable manufacturers</p>
-            </CardContent>
-          </Card>
-          <Card className="border-0 shadow-md hover:shadow-lg transition-all duration-300 bg-gradient-to-br from-purple-50 to-pink-50 animate-scale-in">
-            <CardContent className="p-6 text-center">
-              <Sparkles className="mx-auto h-12 w-12 text-purple-600 mb-4" />
-              <h3 className="font-semibold text-gray-800 mb-2">Traditional Wisdom</h3>
-              <p className="text-sm text-gray-600">Based on thousands of years of Ayurvedic knowledge</p>
-            </CardContent>
-          </Card>
+        {/* Enhanced Features Section */}
+        <div className="mt-20 space-y-12">
+          <div className="text-center animate-fade-in">
+            <h2 className="text-3xl font-bold gradient-text mb-4">Why Choose AyurGen?</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Experience the perfect blend of ancient wisdom and modern quality standards
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 card-interactive bg-gradient-to-br from-card to-secondary/20 group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700"></div>
+              <CardContent className="relative p-8 text-center">
+                <div className="mb-6 relative">
+                  <Leaf className="mx-auto h-16 w-16 text-primary animate-float" />
+                  <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-3">100% Natural & Pure</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Sourced directly from nature with no artificial additives, preservatives, or synthetic compounds
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 card-interactive bg-gradient-to-br from-card to-accent/20 group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700"></div>
+              <CardContent className="relative p-8 text-center">
+                <div className="mb-6 relative">
+                  <Shield className="mx-auto h-16 w-16 text-blue-600 animate-float" style={{ animationDelay: '0.5s' }} />
+                  <div className="absolute inset-0 bg-blue-600/20 rounded-full blur-xl animate-pulse"></div>
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-3">Certified Quality</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Rigorously tested and certified by trusted authorities for purity, potency, and safety
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="relative overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 card-interactive bg-gradient-to-br from-card to-purple-50/20 group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-700"></div>
+              <CardContent className="relative p-8 text-center">
+                <div className="mb-6 relative">
+                  <Award className="mx-auto h-16 w-16 text-purple-600 animate-float" style={{ animationDelay: '1s' }} />
+                  <div className="absolute inset-0 bg-purple-600/20 rounded-full blur-xl animate-pulse"></div>
+                </div>
+                <h3 className="text-xl font-bold text-card-foreground mb-3">Ancient Wisdom</h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Formulated using time-tested Ayurvedic principles passed down through generations
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Additional Trust Indicators */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-border">
+            <div className="text-center animate-scale-in">
+              <div className="text-2xl font-bold text-primary mb-1">50,000+</div>
+              <div className="text-sm text-muted-foreground">Happy Customers</div>
+            </div>
+            <div className="text-center animate-scale-in stagger-1">
+              <div className="text-2xl font-bold text-primary mb-1">4.8★</div>
+              <div className="text-sm text-muted-foreground">Average Rating</div>
+            </div>
+            <div className="text-center animate-scale-in stagger-2">
+              <div className="text-2xl font-bold text-primary mb-1">15+</div>
+              <div className="text-sm text-muted-foreground">Years Experience</div>
+            </div>
+            <div className="text-center animate-scale-in stagger-3">
+              <div className="text-2xl font-bold text-primary mb-1">100%</div>
+              <div className="text-sm text-muted-foreground">Money Back</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
