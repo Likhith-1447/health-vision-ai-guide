@@ -41,6 +41,11 @@ export const getProductById = async (id: string): Promise<Product | null> => {
 
 // Cart functions
 export const getCartItems = async (userId: string): Promise<CartItem[]> => {
+  if (!userId) {
+    console.error("User ID is required");
+    return [];
+  }
+
   const { data, error } = await supabase
     .from("cart_items")
     .select(`
@@ -63,6 +68,11 @@ export const addToCart = async (
   productId: string,
   quantity: number = 1
 ): Promise<CartItem | null> => {
+  if (!userId || !productId) {
+    console.error("User ID and Product ID are required");
+    return null;
+  }
+
   // Check if item already exists in cart
   const { data: existingItem } = await supabase
     .from("cart_items")
@@ -113,6 +123,11 @@ export const updateCartItemQuantity = async (
   cartItemId: string,
   quantity: number
 ): Promise<boolean> => {
+  if (!cartItemId || quantity < 1) {
+    console.error("Valid cart item ID and quantity are required");
+    return false;
+  }
+
   const { error } = await supabase
     .from("cart_items")
     .update({ quantity })
@@ -127,6 +142,11 @@ export const updateCartItemQuantity = async (
 };
 
 export const removeFromCart = async (cartItemId: string): Promise<boolean> => {
+  if (!cartItemId) {
+    console.error("Cart item ID is required");
+    return false;
+  }
+
   const { error } = await supabase
     .from("cart_items")
     .delete()
@@ -141,6 +161,11 @@ export const removeFromCart = async (cartItemId: string): Promise<boolean> => {
 };
 
 export const clearCart = async (userId: string): Promise<boolean> => {
+  if (!userId) {
+    console.error("User ID is required");
+    return false;
+  }
+
   const { error } = await supabase
     .from("cart_items")
     .delete()
@@ -160,6 +185,11 @@ export const createOrder = async (
   cartItems: CartItem[],
   shippingAddress: any
 ): Promise<Order | null> => {
+  if (!userId || !cartItems.length) {
+    console.error("User ID and cart items are required");
+    return null;
+  }
+
   const totalAmount = cartItems.reduce(
     (total, item) => total + Number(item.product.price) * item.quantity,
     0
@@ -225,6 +255,11 @@ export const updateOrderPayment = async (
 };
 
 export const getUserOrders = async (userId: string): Promise<Order[]> => {
+  if (!userId) {
+    console.error("User ID is required");
+    return [];
+  }
+
   const { data, error } = await supabase
     .from("orders")
     .select("*")
