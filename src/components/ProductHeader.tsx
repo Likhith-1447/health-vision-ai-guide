@@ -30,19 +30,21 @@ const ProductHeader = ({ cartCount }: ProductHeaderProps) => {
             </Link>
             
             <div className="flex items-center space-x-4">
-              <Button 
-                variant="outline" 
-                size="lg" 
-                className="group hover:scale-105 transition-all duration-300 hover:shadow-lg border-primary/20 hover:border-primary bg-card hover:bg-primary/5"
-              >
-                <ShoppingCart className="mr-2 h-5 w-5 group-hover:animate-wiggle" />
-                <span className="font-semibold">Cart</span>
-                {cartCount > 0 && (
-                  <span className="ml-2 bg-primary text-primary-foreground text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center animate-bounce-in">
-                    {cartCount}
-                  </span>
-                )}
-              </Button>
+              <Link to="/cart">
+                <Button 
+                  variant="outline" 
+                  size="lg" 
+                  className="group hover:scale-105 transition-all duration-300 hover:shadow-lg border-primary/20 hover:border-primary bg-card hover:bg-primary/5"
+                >
+                  <ShoppingCart className="mr-2 h-5 w-5 group-hover:animate-wiggle" />
+                  <span className="font-semibold">Cart</span>
+                  {cartCount > 0 && (
+                    <span className="ml-2 bg-primary text-primary-foreground text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center animate-bounce-in">
+                      {cartCount}
+                    </span>
+                  )}
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

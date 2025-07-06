@@ -28,6 +28,8 @@ import {
   Sparkles,
   Shield,
   Leaf,
+  ShoppingCart,
+  Package,
 } from 'lucide-react';
 import ThemeToggle from './ThemeToggle';
 import LanguageSelector from './LanguageSelector';
@@ -84,6 +86,18 @@ const secondaryMenuItems = [
     url: '/products', 
     icon: Pill,
     gradient: 'from-amber-500 to-orange-500'
+  },
+  { 
+    title: 'Shopping Cart', 
+    url: '/cart', 
+    icon: ShoppingCart,
+    gradient: 'from-emerald-500 to-teal-500'
+  },
+  { 
+    title: 'My Orders', 
+    url: '/orders', 
+    icon: Package,
+    gradient: 'from-blue-500 to-indigo-500'
   },
   { 
     title: 'Nutrition Advisor', 

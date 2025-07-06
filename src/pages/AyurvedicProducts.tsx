@@ -7,7 +7,7 @@ import { useUser } from "@clerk/clerk-react";
 import ProductHeader from "@/components/ProductHeader";
 import ProductFilters from "@/components/ProductFilters";
 import ProductCard from "@/components/ProductCard";
-import { getProducts, addToCart, type Product } from "@/lib/product-database";
+import { getProducts, addToCart, getCartItems, type Product } from "@/lib/product-database";
 
 const AyurvedicProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -17,6 +17,21 @@ const AyurvedicProducts = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { user } = useUser();
+  
+  // Load cart count on component mount
+  useEffect(() => {
+    const loadCartCount = async () => {
+      if (user) {
+        try {
+          const items = await getCartItems(user.id);
+          setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+        } catch (error) {
+          console.error("Error loading cart count:", error);
+        }
+      }
+    };
+    loadCartCount();
+  }, [user]);
 
   useEffect(() => {
     loadProducts();
@@ -70,13 +85,18 @@ const AyurvedicProducts = () => {
     }
 
     try {
-      await addToCart(user.id, productId);
-      setCartCount(prev => prev + 1);
-      const product = products.find(p => p.id === productId);
-      toast({
-        title: "✨ Added to Cart",
-        description: `${product?.name} has been added to your cart.`,
-      });
+      const result = await addToCart(user.id, productId);
+      if (result) {
+        // Reload cart count
+        const items = await getCartItems(user.id);
+        setCartCount(items.reduce((sum, item) => sum + item.quantity, 0));
+        
+        const product = products.find(p => p.id === productId);
+        toast({
+          title: "✨ Added to Cart",
+          description: `${product?.name} has been added to your cart.`,
+        });
+      }
     } catch (error) {
       toast({
         title: "Error",

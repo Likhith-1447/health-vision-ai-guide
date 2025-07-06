@@ -167,6 +167,32 @@ const Checkout = () => {
 
       const totalAmount = calculateTotal();
       
+      // Use Razorpay.me link for payment
+      window.open('https://razorpay.me/@meesalalikhith', '_blank');
+      
+      // For demo purposes, simulate successful payment
+      setTimeout(async () => {
+        try {
+          await updateOrderPayment(order.id, 'demo_payment_' + Date.now(), "paid");
+          await clearCart(user.id);
+          
+          toast({
+            title: "✨ Payment Successful!",
+            description: "Your order has been placed successfully",
+          });
+          
+          navigate('/orders');
+        } catch (error) {
+          toast({
+            title: "Error",
+            description: "Failed to update order",
+            variant: "destructive",
+          });
+        }
+      }, 2000);
+      
+      return;
+      
       const options = {
         key: "rzp_test_WEw8KlqXFJhvPP", // Replace with your Razorpay key
         amount: totalAmount * 100, // Amount in paise
