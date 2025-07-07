@@ -48,11 +48,11 @@ const PrakritiResults = () => {
   const getDoshaColor = (dosha: string) => {
     switch (dosha) {
       case 'vata':
-        return 'text-blue-600 dark:text-blue-400';
+        return 'text-[hsl(var(--vata))]';
       case 'pitta':
-        return 'text-red-600 dark:text-red-400';
+        return 'text-[hsl(var(--pitta))]';
       case 'kapha':
-        return 'text-primary';
+        return 'text-[hsl(var(--kapha))]';
       default:
         return 'text-primary';
     }
@@ -61,13 +61,13 @@ const PrakritiResults = () => {
   const getDoshaBg = (dosha: string) => {
     switch (dosha) {
       case 'vata':
-        return 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20';
+        return 'bg-gradient-to-br from-[hsl(var(--vata))]/5 to-[hsl(var(--vata))]/10 dark:from-[hsl(var(--vata))]/10 dark:to-[hsl(var(--vata))]/20';
       case 'pitta':
-        return 'bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20';
+        return 'bg-gradient-to-br from-[hsl(var(--pitta))]/5 to-[hsl(var(--pitta))]/10 dark:from-[hsl(var(--pitta))]/10 dark:to-[hsl(var(--pitta))]/20';
       case 'kapha':
-        return 'bg-gradient-to-br from-primary/5 to-emerald-50 dark:from-primary/10 dark:to-emerald-950/20';
+        return 'bg-gradient-to-br from-[hsl(var(--kapha))]/5 to-[hsl(var(--kapha))]/10 dark:from-[hsl(var(--kapha))]/10 dark:to-[hsl(var(--kapha))]/20';
       default:
-        return 'bg-gradient-to-br from-primary/5 to-emerald-50 dark:from-primary/10 dark:to-emerald-950/20';
+        return 'bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20';
     }
   };
 
@@ -152,7 +152,7 @@ const PrakritiResults = () => {
           <div className="space-y-2 transform hover:scale-105 transition-transform duration-300">
             <div className="flex justify-between items-center">
               <span className="flex items-center space-x-2">
-                <Wind className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <Wind className="h-4 w-4 text-[hsl(var(--vata))]" />
                 <span className="text-sm font-medium">Vata</span>
               </span>
               <span className="text-sm font-semibold">{prakritiResult.vata_score}/{totalQuestions}</span>
@@ -166,7 +166,7 @@ const PrakritiResults = () => {
           <div className="space-y-2 transform hover:scale-105 transition-transform duration-300">
             <div className="flex justify-between items-center">
               <span className="flex items-center space-x-2">
-                <Flame className="h-4 w-4 text-red-600 dark:text-red-400" />
+                <Flame className="h-4 w-4 text-[hsl(var(--pitta))]" />
                 <span className="text-sm font-medium">Pitta</span>
               </span>
               <span className="text-sm font-semibold">{prakritiResult.pitta_score}/{totalQuestions}</span>
@@ -180,7 +180,7 @@ const PrakritiResults = () => {
           <div className="space-y-2 transform hover:scale-105 transition-transform duration-300">
             <div className="flex justify-between items-center">
               <span className="flex items-center space-x-2">
-                <Mountain className="h-4 w-4 text-primary" />
+                <Mountain className="h-4 w-4 text-[hsl(var(--kapha))]" />
                 <span className="text-sm font-medium">Kapha</span>
               </span>
               <span className="text-sm font-semibold">{prakritiResult.kapha_score}/{totalQuestions}</span>

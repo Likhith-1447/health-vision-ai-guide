@@ -37,13 +37,30 @@
 
     --radius: 0.75rem;
     
-    /* Enhanced color palette for products */
+    /* Professional color palette */
     --emerald: 142 76% 36%;
     --emerald-light: 142 64% 48%;
     --emerald-dark: 142 76% 28%;
     --sage: 142 30% 85%;
     --mint: 142 50% 92%;
     --forest: 142 80% 20%;
+    
+    /* Health metric colors */
+    --health-excellent: 142 76% 36%;
+    --health-good: 142 64% 48%;
+    --health-warning: 45 93% 47%;
+    --health-danger: 0 84% 60%;
+    
+    /* Dosha colors */
+    --vata: 217 91% 60%;
+    --pitta: 0 84% 60%;
+    --kapha: 142 76% 36%;
+    
+    /* Professional gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--emerald-light)));
+    --gradient-success: linear-gradient(135deg, hsl(var(--health-excellent)), hsl(var(--health-good)));
+    --gradient-warning: linear-gradient(135deg, hsl(var(--health-warning)), hsl(45 93% 55%));
+    --gradient-danger: linear-gradient(135deg, hsl(var(--health-danger)), hsl(0 84% 68%));
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -428,3 +445,46 @@
 .stagger-3 { animation-delay: 0.3s; }
 .stagger-4 { animation-delay: 0.4s; }
 .stagger-5 { animation-delay: 0.5s; }
+
+/* Professional Loading States */
+@keyframes skeleton-pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.skeleton {
+  @apply bg-muted animate-pulse rounded;
+  animation: skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Professional Card Shadows */
+.card-shadow-sm {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.card-shadow {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+.card-shadow-lg {
+  box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+.card-shadow-xl {
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Professional metric indicators */
+.metric-excellent { color: hsl(var(--health-excellent)); }
+.metric-good { color: hsl(var(--health-good)); }
+.metric-warning { color: hsl(var(--health-warning)); }
+.metric-danger { color: hsl(var(--health-danger)); }
+
+/* Professional status badges */
+.status-active { @apply bg-emerald-100 text-emerald-800 dark:bg-emerald-900/20 dark:text-emerald-400; }
+.status-pending { @apply bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400; }
+.status-inactive { @apply bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400; }

@@ -28,6 +28,8 @@ import ActivityFeed from "@/components/ActivityFeed";
 import PrakritiResults from "@/components/PrakritiResults";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
+import { LoadingSkeleton, DashboardSkeleton, StatCardSkeleton } from "@/components/LoadingSkeleton";
+import HealthMetricsChart from "@/components/HealthMetricsChart";
 import { useUser, SignInButton } from '@clerk/clerk-react';
 
 const Dashboard = () => {
@@ -107,6 +109,10 @@ const Dashboard = () => {
     { icon: Brain, activity: "Meditation", time: "6 hours ago", status: "completed" },
     { icon: Moon, activity: "Sleep Tracking", time: "1 day ago", status: "pending" }
   ];
+
+  if (isLoadingStats) {
+    return <DashboardSkeleton />;
+  }
 
   if (!isSignedIn) {
     return (
@@ -238,62 +244,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Health Metrics */}
-          <div className="grid lg:grid-cols-2 gap-8 mb-8">
-            <Card className="animate-slide-up border-0 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="relative z-10">
-                <CardTitle className="flex items-center group-hover:text-primary transition-colors duration-300">
-                  <TrendingUp className="mr-2 h-5 w-5 text-primary animate-pulse" />
-                  Health Metrics
-                </CardTitle>
-                <CardDescription>Your current wellness indicators</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6 relative z-10">
-                {healthMetrics.map((metric, index) => (
-                  <div key={metric.title} className="space-y-2 transform hover:scale-105 transition-transform duration-300" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm font-medium">{metric.title}</span>
-                      <span className="text-sm text-muted-foreground font-semibold">{Math.round(metric.value)}%</span>
-                    </div>
-                    <Progress 
-                      value={metric.value} 
-                      className="h-3 transform hover:scale-x-105 transition-transform duration-300 animate-pulse"
-                    />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            <Card className="animate-slide-up border-0 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group" style={{ animationDelay: "0.1s" }}>
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <CardHeader className="relative z-10">
-                <CardTitle className="flex items-center group-hover:text-primary transition-colors duration-300">
-                  <Calendar className="mr-2 h-5 w-5 text-primary animate-pulse" />
-                  Today's Goals
-                </CardTitle>
-                <CardDescription>Your personalized wellness routine</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 relative z-10">
-                {recentActivities.map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-all duration-300 transform hover:scale-105 hover:shadow-md animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <div className="flex items-center space-x-3">
-                      <activity.icon className="h-5 w-5 text-primary animate-pulse" />
-                      <div>
-                        <div className="font-medium text-sm">{activity.activity}</div>
-                        <div className="text-xs text-muted-foreground">{activity.time}</div>
-                      </div>
-                    </div>
-                    <Badge 
-                      variant={activity.status === "completed" ? "default" : "secondary"}
-                      className="text-xs animate-pulse"
-                    >
-                      {activity.status}
-                    </Badge>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+          {/* Enhanced Health Metrics with Professional Charts */}
+          <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.45s' }}>
+            <HealthMetricsChart userStats={userStats} />
           </div>
 
           {/* Enhanced Gamification Section */}
