@@ -390,3 +390,63 @@ export const unlockAchievement = async (achievement: Omit<Achievement, 'id' | 'u
 
   return data;
 };
+
+// Prakriti Results functions
+export interface PrakritiResult {
+  id: string;
+  user_id: string;
+  dominant_dosha: string;
+  vata_score: number;
+  pitta_score: number;
+  kapha_score: number;
+  test_answers: any;
+  recommendations?: any;
+  completed_at: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const savePrakritiResult = async (
+  userId: string,
+  results: {
+    dominant_dosha: string;
+    vata_score: number;
+    pitta_score: number;
+    kapha_score: number;
+    test_answers: any;
+    recommendations?: any;
+  }
+): Promise<PrakritiResult> => {
+  const { data, error } = await supabase
+    .from('prakriti_results')
+    .insert([{
+      user_id: userId,
+      ...results
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error saving prakriti result:', error);
+    throw error;
+  }
+
+  return data;
+};
+
+export const getUserPrakritiResult = async (userId: string): Promise<PrakritiResult | null> => {
+  const { data, error } = await supabase
+    .from('prakriti_results')
+    .select('*')
+    .eq('user_id', userId)
+    .order('completed_at', { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error('Error fetching prakriti result:', error);
+    return null;
+  }
+
+  return data;
+};

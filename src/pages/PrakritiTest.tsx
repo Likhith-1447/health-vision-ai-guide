@@ -5,9 +5,11 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { Leaf, User, Brain, Heart, Zap, Wind, Flame, Mountain } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Leaf, User, Brain, Heart, Zap, Wind, Flame, Mountain, Sparkles, CheckCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useUser } from "@clerk/clerk-react";
+import { savePrakritiResult, logActivity } from "@/lib/database";
 
 interface Question {
   id: number;
@@ -30,7 +32,10 @@ const PrakritiTest = () => {
   const [answers, setAnswers] = useState<Record<number, 'vata' | 'pitta' | 'kapha'>>({});
   const [showResults, setShowResults] = useState(false);
   const [results, setResults] = useState<DoshaResult>({ vata: 0, pitta: 0, kapha: 0 });
+  const [saving, setSaving] = useState(false);
   const { toast } = useToast();
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   const questions: Question[] = [
     {
@@ -133,7 +138,7 @@ const PrakritiTest = () => {
     }
   };
 
-  const calculateResults = () => {
+  const calculateResults = async () => {
     const doshaScores = { vata: 0, pitta: 0, kapha: 0 };
     
     Object.values(answers).forEach(answer => {
@@ -143,10 +148,63 @@ const PrakritiTest = () => {
     setResults(doshaScores);
     setShowResults(true);
     
-    toast({
-      title: "Assessment Complete!",
-      description: "Your Prakriti analysis is ready.",
-    });
+    // Save results to database if user is authenticated
+    if (user) {
+      try {
+        setSaving(true);
+        const dominantDosha = getDominantDoshaFromScores(doshaScores);
+        const doshaInfo = getDoshaInfo(dominantDosha);
+        
+        await savePrakritiResult(user.id, {
+          dominant_dosha: dominantDosha,
+          vata_score: doshaScores.vata,
+          pitta_score: doshaScores.pitta,
+          kapha_score: doshaScores.kapha,
+          test_answers: answers,
+          recommendations: doshaInfo ? {
+            qualities: doshaInfo.qualities,
+            recommendations: doshaInfo.recommendations,
+            foods: doshaInfo.foods,
+            herbs: doshaInfo.herbs
+          } : null
+        });
+
+        // Log activity for gamification
+        await logActivity({
+          user_id: user.id,
+          activity_type: 'prakriti_test_completed',
+          activity_data: { dosha: dominantDosha, scores: doshaScores },
+          points_earned: 100,
+          streak_count: 1
+        });
+
+        toast({
+          title: "Assessment Complete!",
+          description: "Your Prakriti analysis has been saved to your profile.",
+        });
+      } catch (error) {
+        console.error('Error saving prakriti result:', error);
+        toast({
+          title: "Results Calculated",
+          description: "Your analysis is ready, but could not be saved to your profile.",
+          variant: "destructive"
+        });
+      } finally {
+        setSaving(false);
+      }
+    } else {
+      toast({
+        title: "Assessment Complete!",
+        description: "Sign in to save your results to your profile.",
+      });
+    }
+  };
+
+  const getDominantDoshaFromScores = (scores: DoshaResult) => {
+    const maxScore = Math.max(scores.vata, scores.pitta, scores.kapha);
+    if (scores.vata === maxScore) return 'vata';
+    if (scores.pitta === maxScore) return 'pitta';
+    return 'kapha';
   };
 
   const getDominantDosha = () => {
@@ -163,9 +221,10 @@ const PrakritiTest = () => {
           name: 'Vata',
           element: 'Air & Space',
           icon: <Wind className="h-8 w-8" />,
-          color: 'text-blue-600',
-          bgColor: 'bg-blue-50',
-          borderColor: 'border-blue-200',
+          color: 'text-blue-600 dark:text-blue-400',
+          bgColor: 'bg-blue-50 dark:bg-blue-950/20',
+          borderColor: 'border-blue-200 dark:border-blue-800',
+          cardBg: 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20',
           qualities: ['Creative', 'Energetic', 'Quick-thinking', 'Flexible'],
           recommendations: [
             'Regular routine and warm, cooked foods',
@@ -181,9 +240,10 @@ const PrakritiTest = () => {
           name: 'Pitta',
           element: 'Fire & Water',
           icon: <Flame className="h-8 w-8" />,
-          color: 'text-red-600',
-          bgColor: 'bg-red-50',
-          borderColor: 'border-red-200',
+          color: 'text-red-600 dark:text-red-400',
+          bgColor: 'bg-red-50 dark:bg-red-950/20',
+          borderColor: 'border-red-200 dark:border-red-800',
+          cardBg: 'bg-gradient-to-br from-red-50 to-orange-50 dark:from-red-950/20 dark:to-orange-950/20',
           qualities: ['Intelligent', 'Focused', 'Organized', 'Goal-oriented'],
           recommendations: [
             'Cool, fresh foods and moderate portions',
@@ -199,9 +259,10 @@ const PrakritiTest = () => {
           name: 'Kapha',
           element: 'Earth & Water',
           icon: <Mountain className="h-8 w-8" />,
-          color: 'text-green-600',
-          bgColor: 'bg-green-50',
-          borderColor: 'border-green-200',
+          color: 'text-primary',
+          bgColor: 'bg-primary/5',
+          borderColor: 'border-primary/20',
+          cardBg: 'bg-gradient-to-br from-primary/5 to-emerald-50 dark:from-primary/10 dark:to-emerald-950/20',
           qualities: ['Stable', 'Compassionate', 'Patient', 'Nurturing'],
           recommendations: [
             'Light, warm, spicy foods in smaller portions',
@@ -348,12 +409,30 @@ const PrakritiTest = () => {
           )}
 
           <div className="flex justify-center space-x-4 mt-8">
-            <Button onClick={() => { setShowResults(false); setCurrentQuestion(0); setAnswers({}); }} variant="outline">
+            <Button 
+              onClick={() => { setShowResults(false); setCurrentQuestion(0); setAnswers({}); }} 
+              variant="outline"
+              disabled={saving}
+              className="transform hover:scale-105 transition-all duration-300"
+            >
               Retake Assessment
             </Button>
-            <Link to="/products">
-              <Button className="bg-gradient-to-r from-green-600 to-blue-600">
-                Shop Recommended Products
+            <Link to="/dashboard">
+              <Button 
+                className="bg-gradient-to-r from-primary to-emerald-600 hover:from-primary/90 hover:to-emerald-600/90 transform hover:scale-105 transition-all duration-300"
+                disabled={saving}
+              >
+                {saving ? (
+                  <>
+                    <Sparkles className="h-4 w-4 mr-2 animate-spin" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    View Dashboard
+                  </>
+                )}
               </Button>
             </Link>
           </div>

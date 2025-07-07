@@ -242,6 +242,48 @@ export type Database = {
         }
         Relationships: []
       }
+      prakriti_results: {
+        Row: {
+          completed_at: string
+          created_at: string
+          dominant_dosha: string
+          id: string
+          kapha_score: number
+          pitta_score: number
+          recommendations: Json | null
+          test_answers: Json
+          updated_at: string
+          user_id: string
+          vata_score: number
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          dominant_dosha: string
+          id?: string
+          kapha_score?: number
+          pitta_score?: number
+          recommendations?: Json | null
+          test_answers?: Json
+          updated_at?: string
+          user_id: string
+          vata_score?: number
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          dominant_dosha?: string
+          id?: string
+          kapha_score?: number
+          pitta_score?: number
+          recommendations?: Json | null
+          test_answers?: Json
+          updated_at?: string
+          user_id?: string
+          vata_score?: number
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           benefits: string[] | null

@@ -25,6 +25,7 @@ import Navbar from "@/components/Navbar";
 import HealthGamification from "@/components/HealthGamification";
 import DailyClaimCard from "@/components/DailyClaimCard";
 import ActivityFeed from "@/components/ActivityFeed";
+import PrakritiResults from "@/components/PrakritiResults";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { toast } from "sonner";
 import { useUser, SignInButton } from '@clerk/clerk-react';
@@ -220,6 +221,11 @@ const Dashboard = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+
+          {/* Prakriti Results Section */}
+          <div className="mb-8 animate-fade-in" style={{ animationDelay: '0.35s' }}>
+            <PrakritiResults />
           </div>
 
           {/* Daily Claim and Activity Feed */}
