@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingSkeleton } from "@/components/LoadingSkeleton";
+import { useUser } from "@clerk/clerk-react";
 
 interface Doctor {
   id: string;
@@ -29,6 +30,7 @@ interface Doctor {
 }
 
 const Consultation = () => {
+  const { user } = useUser();
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
   const [bookingForm, setBookingForm] = useState({
     name: "",
@@ -119,9 +121,7 @@ const Consultation = () => {
     setIsLoading(true);
 
     try {
-      // Get current user (you may need to implement auth first)
-      const { data: { user } } = await supabase.auth.getUser();
-      
+      // Check if user is authenticated with Clerk
       if (!user) {
         toast({
           title: "Authentication Required",
