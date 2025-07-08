@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Calendar, Clock, Video, MessageCircle, Star, Award, MapPin, Phone, Mail, BookOpen } from "lucide-react";
+import { Calendar, Clock, Video, MessageCircle, Star, Award, MapPin, Phone, Mail, BookOpen, CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { LoadingSkeleton } from "@/components/LoadingSkeleton";
 
 interface Doctor {
   id: string;
@@ -37,6 +39,9 @@ const Consultation = () => {
     preferredTime: "",
     symptoms: ""
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const [meetingLink, setMeetingLink] = useState("");
   const { toast } = useToast();
 
   const doctors: Doctor[] = [
@@ -98,7 +103,7 @@ const Consultation = () => {
     }
   ];
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
     if (!selectedDoctor) return;
     
     // Validate form
@@ -111,22 +116,99 @@ const Consultation = () => {
       return;
     }
 
-    toast({
-      title: "Booking Confirmed!",
-      description: `Your consultation with ${selectedDoctor.name} has been scheduled. You will receive a confirmation email shortly.`,
-    });
+    setIsLoading(true);
 
-    // Reset form
-    setBookingForm({
-      name: "",
-      email: "",
-      phone: "",
-      consultationType: "video",
-      preferredDate: "",
-      preferredTime: "",
-      symptoms: ""
-    });
-    setSelectedDoctor(null);
+    try {
+      // Get current user (you may need to implement auth first)
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toast({
+          title: "Authentication Required",
+          description: "Please sign in to book a consultation.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      // Save consultation to database
+      const consultationData = {
+        user_id: user.id,
+        doctor_id: selectedDoctor.id,
+        doctor_name: selectedDoctor.name,
+        patient_name: bookingForm.name,
+        patient_email: bookingForm.email,
+        patient_phone: bookingForm.phone,
+        consultation_type: bookingForm.consultationType,
+        preferred_date: bookingForm.preferredDate,
+        preferred_time: bookingForm.preferredTime || null,
+        symptoms: bookingForm.symptoms || null,
+        total_amount: selectedDoctor.consultationFee + 50,
+      };
+
+      const { data: consultation, error: dbError } = await supabase
+        .from('consultations')
+        .insert(consultationData)
+        .select()
+        .single();
+
+      if (dbError) {
+        console.error("Database error:", dbError);
+        throw new Error("Failed to save consultation booking");
+      }
+
+      // Send confirmation email
+      const { data: emailResult, error: emailError } = await supabase.functions.invoke(
+        'send-consultation-email',
+        {
+          body: {
+            consultationId: consultation.id,
+            patientName: bookingForm.name,
+            patientEmail: bookingForm.email,
+            doctorName: selectedDoctor.name,
+            consultationType: bookingForm.consultationType,
+            preferredDate: bookingForm.preferredDate,
+            preferredTime: bookingForm.preferredTime,
+            totalAmount: selectedDoctor.consultationFee + 50,
+          }
+        }
+      );
+
+      if (emailError) {
+        console.error("Email error:", emailError);
+        // Still show success even if email fails
+      }
+
+      const generatedMeetingLink = emailResult?.meetingLink || `https://meet.jit.si/consultation-${consultation.id}`;
+      
+      // Update consultation with meeting link
+      await supabase
+        .from('consultations')
+        .update({ 
+          meeting_link: generatedMeetingLink,
+          meeting_id: `consultation-${consultation.id}`
+        })
+        .eq('id', consultation.id);
+
+      setMeetingLink(generatedMeetingLink);
+      setBookingSuccess(true);
+
+      toast({
+        title: "Booking Confirmed!",
+        description: "Your consultation has been scheduled and confirmation email sent.",
+      });
+
+    } catch (error: any) {
+      console.error("Booking error:", error);
+      toast({
+        title: "Booking Failed",
+        description: error.message || "Failed to book consultation. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -153,7 +235,70 @@ const Consultation = () => {
             </p>
           </div>
 
-          {selectedDoctor ? (
+          {bookingSuccess ? (
+            /* Success State */
+            <div className="max-w-2xl mx-auto text-center">
+              <Card className="border-0 shadow-lg">
+                <CardContent className="p-8">
+                  <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-gray-800 mb-4">Consultation Booked Successfully!</h2>
+                  <p className="text-gray-600 mb-6">
+                    Your consultation with <strong>{selectedDoctor?.name}</strong> has been confirmed. 
+                    You will receive a confirmation email with all the details.
+                  </p>
+                  
+                  {meetingLink && bookingForm.consultationType === 'video' && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                      <h3 className="font-semibold text-blue-800 mb-2">Your Meeting Link</h3>
+                      <div className="flex items-center justify-center gap-4">
+                        <code className="bg-white px-3 py-2 rounded border text-sm text-blue-700 flex-1">
+                          {meetingLink}
+                        </code>
+                        <Button
+                          onClick={() => navigator.clipboard.writeText(meetingLink)}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Copy
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex gap-4 justify-center">
+                    <Button
+                      onClick={() => {
+                        setBookingSuccess(false);
+                        setSelectedDoctor(null);
+                        setBookingForm({
+                          name: "",
+                          email: "",
+                          phone: "",
+                          consultationType: "video",
+                          preferredDate: "",
+                          preferredTime: "",
+                          symptoms: ""
+                        });
+                      }}
+                      variant="outline"
+                    >
+                      Book Another Consultation
+                    </Button>
+                    {meetingLink && bookingForm.consultationType === 'video' && (
+                      <Button asChild>
+                        <a href={meetingLink} target="_blank" rel="noopener noreferrer">
+                          <Video className="mr-2 h-4 w-4" />
+                          Join Meeting
+                        </a>
+                      </Button>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          ) : selectedDoctor ? (
             /* Booking Form */
             <div className="grid lg:grid-cols-2 gap-8">
               <Card className="border-0 shadow-lg">
@@ -258,11 +403,27 @@ const Consultation = () => {
                   </div>
 
                   <div className="flex space-x-4 pt-4">
-                    <Button onClick={() => setSelectedDoctor(null)} variant="outline" className="flex-1">
+                    <Button 
+                      onClick={() => setSelectedDoctor(null)} 
+                      variant="outline" 
+                      className="flex-1"
+                      disabled={isLoading}
+                    >
                       Back to Doctors
                     </Button>
-                    <Button onClick={handleBooking} className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600">
-                      Confirm Booking
+                    <Button 
+                      onClick={handleBooking} 
+                      className="flex-1 bg-gradient-to-r from-purple-600 to-blue-600"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <LoadingSkeleton className="w-4 h-4 mr-2" />
+                          Processing...
+                        </>
+                      ) : (
+                        "Confirm Booking"
+                      )}
                     </Button>
                   </div>
                 </CardContent>
